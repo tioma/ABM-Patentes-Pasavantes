@@ -1,19 +1,33 @@
 /**
  * Created by Artiom on 4/10/16.
  */
-administradorPasavantes.factory('pasavantesFactory', ['$http', '$q', 'APP_CONFIG', 'Pasavante', 'Tarifa', function($http, $q, APP_CONFIG, Pasavante, Tarifa){
+administradorPasavantes.factory('pasavantesFactory', ['$http', '$q', 'APP_CONFIG', 'Pasavante', 'Tarifa', 'localStorageService', function($http, $q, APP_CONFIG, Pasavante, Tarifa, localStorageService){
 
-	var pasavanteFactory = {
+	var pasavantesFactory = {
+		muelles: localStorageService.get('muelles'),
+		trafico: localStorageService.get('trafico'),
+		tarifas: localStorageService.get('tarifas'),
 		getPasavantes: function(){
 			var deferred = $q.defer();
-			var url = APP_CONFIG + '/pasavantes';
+			var url = APP_CONFIG.SERVER_URL + '/pasavantes';
 			$http.get(url).then(function(response){
-
+				console.log(response);
+				if (response.data.status == 'OK'){
+					var pasavantesArray = [];
+					response.data.data.forEach(function(pasavanteData){
+						pasavantesArray.push(new Pasavante(pasavanteData))
+					});
+					deferred.resolve(pasavantesArray);
+				} else {
+					deferred.reject(response.data);
+				}
 			}, function(response){
-
-			})
+				console.log(response);
+				deferred.reject(response.data);
+			});
+			return deferred.promise
 		}
-	}
+	};
 
-	return pasavanteFactory;
+	return pasavantesFactory;
 }]);

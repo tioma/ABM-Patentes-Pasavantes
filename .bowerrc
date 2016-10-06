@@ -1,0 +1,4 @@
+{
+  "proxy": "http://besex:8888",
+  "https-proxy":"http://besex:8888"
+}

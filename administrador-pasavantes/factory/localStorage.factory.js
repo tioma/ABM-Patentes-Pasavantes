@@ -4,7 +4,6 @@
 administradorPasavantes.factory('localStorageFactory', ['$http', '$q', 'APP_CONFIG', 'localStorageService', function($http, $q, APP_CONFIG, localStorageService){
 
 	var localStorageFactory = {
-		apiEndpoint: 'http://www.e-puertobue.com.ar/ws',
 		getRates: function(){
 			var deferred = $q.defer();
 			var url = APP_CONFIG.SERVER_URL + '/rates/document/11';
@@ -18,7 +17,7 @@ administradorPasavantes.factory('localStorageFactory', ['$http', '$q', 'APP_CONF
 		},
 		getTraffic: function(){
 			var deferred = $q.defer();
-			var url = this.apiEndpoint + '/ws-trafico.php';
+			var url = APP_CONFIG.API_ENDPOINT + '/ws-trafico.php';
 			$http.get(url).then(function(response){
 				localStorageService.set('trafico', response.data);
 				deferred.resolve();
@@ -29,7 +28,7 @@ administradorPasavantes.factory('localStorageFactory', ['$http', '$q', 'APP_CONF
 		},
 		getHarbors: function(){
 			var deferred = $q.defer();
-			var url = this.apiEndpoint + '/ws-sitios.php';
+			var url = APP_CONFIG.API_ENDPOINT + '/ws-sitios.php';
 			$http.get(url).then(function(response){
 				localStorageService.set('muelles', response.data);
 				deferred.resolve();

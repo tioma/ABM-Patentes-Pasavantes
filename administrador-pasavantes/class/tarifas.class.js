@@ -4,6 +4,7 @@
 administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function($http, APP_CONFIG, $q){
 
 	function Tarifa(tarifaData){
+		this.MINIMO = false;
 		if (tarifaData) this.setData(tarifaData);
 	}
 
@@ -26,8 +27,11 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function
 				deferred.reject(response.data)
 			});
 			return deferred.promise;
+		},
+		formatData: function(){
+			return this.CODIGO_TARIFA + ' - ' + this.DESCRI_TARIFA;
 		}
-	}
+	};
 
 	return Tarifa;
 

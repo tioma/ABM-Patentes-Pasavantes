@@ -1,0 +1,11 @@
+.clickeable-row {
+    cursor: pointer;
+}
+
+.clickeable-row:hover{
+    background-color: #00b3ee;
+}
+
+.selected-row {
+    background-color: #00b3ee;
+}

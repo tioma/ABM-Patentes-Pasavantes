@@ -17,9 +17,9 @@ administradorPasavantes.config(['$stateProvider', '$urlRouterProvider', 'localSt
 		templateUrl: 'view/pasavantes.html',
 		controller: 'pasavantesCtrl',
 		resolve: {
-			tipoNavegacion: localStorageFactory.getTraffic(),
-			muelles: localStorageFactory.getHarbors(),
-			tarifas: localStorageFactory.getRates()
+			tipoNavegacion: localStorageFactory.getTraffic,
+			muelles: localStorageFactory.getHarbors,
+			tarifas: localStorageFactory.getRates
 		}
 	})
 
