@@ -7,6 +7,7 @@ administradorPasavantes.factory('Pasavante', ['$http', 'APP_CONFIG', '$q', 'Tari
 		if (pasavanteData){
 			this.setData(pasavanteData);
 		} else {
+			this.TIENE_MINIMO = 0;
 			this.TERMINALES = [{
 				ID_TERMINAL: 0,
 				TARIFAS: []
@@ -19,13 +20,21 @@ administradorPasavantes.factory('Pasavante', ['$http', 'APP_CONFIG', '$q', 'Tari
 			angular.extend(this, pasavanteData);
 			this.VALOR_TOTAL = 0;
 			this.DETALLE = false;
-			var pasavante = this;
-			this.TERMINALES.forEach(function(muelle){
+			//var pasavante = this;
+			for (var i = 0; i < this.TERMINALES.length; i ++){
+				for (var j = 0; j < this.TERMINALES[i].TARIFAS.length; j++){
+					this.TERMINALES[i].TARIFAS[j] = new Tarifa(this.TERMINALES[i].TARIFAS[j]);
+					this.VALOR_TOTAL += this.TERMINALES[i].TARIFAS[j].VALOR;
+				}
+
+			}
+			/*this.TERMINALES.forEach(function(muelle){
 				muelle.DETALLE = false;
 				muelle.TARIFAS.forEach(function(tarifa){{
+					tarifa = new Tarifa(tarifa);
 					pasavante.VALOR_TOTAL += tarifa.VALOR
 				}})
-			})
+			})*/
 		},
 		addRate: function(){
 			this.TERMINALES[0].TARIFAS.push(new Tarifa());
@@ -46,6 +55,11 @@ administradorPasavantes.factory('Pasavante', ['$http', 'APP_CONFIG', '$q', 'Tari
 			}, function(response){
 				deferred.reject(response)
 			});
+		},
+		enableRate: function(idRate){
+			var deferred = $q.defer();
+			var url = APP_CONFIG.SERVER_URL + 'pasavantes/pasavante/dates/' + idRate;
+
 		},
 		saveChanges: function(){
 			var deferred = $q.defer();

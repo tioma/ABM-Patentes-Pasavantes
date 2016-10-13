@@ -7,7 +7,7 @@ administradorPasavantes.service('dialogsService', ['$uibModal', function($uibMod
         confirm: function(title, message){
             return $uibModal.open({
                 controller: 'dialogsCtrl',
-                templateUrl: './services/dialogs/confirm.html',
+                templateUrl: './service/dialogs/confirm.html',
                 resolve: {
                     title: function(){
                         return title;
@@ -21,7 +21,7 @@ administradorPasavantes.service('dialogsService', ['$uibModal', function($uibMod
         error: function(title, message){
             return $uibModal.open({
                 controller: 'dialogsCtrl',
-                templateUrl: './services/dialogs/error.html',
+                templateUrl: './service/dialogs/error.html',
                 resolve: {
                     title: function(){
                         return title;
@@ -35,7 +35,7 @@ administradorPasavantes.service('dialogsService', ['$uibModal', function($uibMod
         notify: function(title, message){
             return $uibModal.open({
                 controller: 'dialogsCtrl',
-                templateUrl: './services/dialogs/notify.html',
+                templateUrl: './service/dialogs/notify.html',
                 resolve: {
                     title: function(){
                         return title
@@ -49,7 +49,7 @@ administradorPasavantes.service('dialogsService', ['$uibModal', function($uibMod
         login: function(){
             return $uibModal.open({
                 controller: 'loginDialogCtrl',
-                templateUrl: './services/dialogs/login.html',
+                templateUrl: './service/dialogs/login.html',
                 backdrop: 'static'
             })
         }

@@ -9,3 +9,7 @@
 .selected-row {
     background-color: #00b3ee;
 }
+
+.tarifa-baja {
+    color: tomato;
+}

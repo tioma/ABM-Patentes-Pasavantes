@@ -1,21 +1,21 @@
 <div class="col-lg-12">
 
-    <form class="form-horizontal well">
+    <form class="form-horizontal well" ng-submit="guardarPasavante()">
         <fieldset>
             <div class="col-lg-4">
                 <div class="form-group">
                     <div class="input-group">
                         <label for="tipoNavegacionSelect" class="input-group-addon"><strong>Tipo navegación</strong></label>
-                        <input id="tipoNavegacionSelect" type="text" ng-model="nuevoPasavante.ID_TIPO_NAVEGACION" uib-typeahead="trafico as trafico.DESC_TRAFICO for trafico in traficos | filter:$viewValue | limitTo:10" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Ingresar tipo de navegación">
+                        <input id="tipoNavegacionSelect" type="text" ng-model="nuevoPasavante.NAVEGACION" uib-typeahead="trafico as trafico.DESC_TRAFICO for trafico in traficos | filter:$viewValue | limitTo:10" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Ingresar tipo de navegación" typeahead-on-select="setNavegacion($item, $model, $label, $event)" ng-required="true">
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <label for="sitioSelect" class="input-group-addon"><strong>Sitio</strong></label>
-                        <input id="sitioSelect" type="text" ng-model="nuevoPasavante.TERMINALES[0].ID_TERMINAL" uib-typeahead="muelle as muelle.CODIGO_MUELLE + ' - ' + muelle.DESCRIPCION_MUELLE + ' (' + muelle.SHORT_TERMINAL + ')' for muelle in muelles | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Ingresar sitio de atraque">
+                        <input id="sitioSelect" type="text" ng-model="nuevoPasavante.TERMINALES[0].MUELLE" uib-typeahead="muelle as muelle.CODIGO_MUELLE + ' - ' + muelle.DESCRIPCION_MUELLE + ' (' + muelle.SHORT_TERMINAL + ')' for muelle in muelles | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Ingresar sitio de atraque" typeahead-on-select="setMuelle($item, $model, $label, $event)" ng-required="true">
                     </div>
                 </div>
-                <div class="panel panel-info">
+                <!--<div class="panel panel-info">
                     <div class = "panel-heading panel-primary">MINIMO A FACTURAR</div>
                     <div class = "panel-body">
                         <div class="form-group col-lg-12">
@@ -33,7 +33,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
             </div>
             <div class="col-lg-8">
                 <div class = "panel panel-primary">
@@ -42,6 +42,7 @@
                         <table class="table table-striped" id="ratesTable">
                             <thead>
                             <tr>
+                                <td><strong>Mínimo a facturar</strong></td>
                                 <td><strong>Tarifa</strong></td>
                                 <td><strong>Desde</strong></td>
                                 <td><strong>Hasta</strong></td>
@@ -51,28 +52,32 @@
                             </thead>
                             <tbody>
                             <tr ng-repeat="tarifa in nuevoPasavante.TERMINALES[0].TARIFAS track by $index">
-                                <td class="col-lg-5">
-                                    <input type="text" ng-model="tarifa.DESCRIPCION" uib-typeahead="tarifa as tarifa.formatData() for tarifa in tarifas | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Seleccione una tarifa">
+                                <td class="col-lg-1 text-center"><input type="radio"  name="pasavanteMinimo" ng-model="tarifa.MINIMO" class="radio text-center"></td>
+                                <td class="col-lg-4">
+                                    <input type="text" ng-model="tarifa.BACKUP" uib-typeahead="tarifa as tarifa.formatData() for tarifa in tarifas | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Seleccione una tarifa" typeahead-on-select="setTarifa($item, $model, $label, $event, $index)" ng-required="true">
                                 </td>
                                 <td class="col-lg-2">
                                     <div class="input-group">
-                                        <input type="text" class="form-control datepicker fecha-inicio" data-provide="datepicker" placeholder="dd/mm/yyyy" readonly style="background-color: white">
-                                        <span class="input-group-btn"><button type="button" class="btn btn-default clear"><i class="fa fa-remove"></i></button></span>
+                                        <span class="input-group-addon" ng-click="tarifa.DESDE_OPENED = !tarifa.DESDE_OPENED"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" class="form-control datepicker" ng-change="setMinDate(tarifa)" uib-datepicker-popup="yyyy-MM-dd" datepicker-options="tarifa.DESDE_OPTIONS" is-open="tarifa.DESDE_OPENED" ng-model="tarifa.FECHA_INICIO" placeholder="aaaa-mm-dd" readonly style="background-color: white" close-text="Cerrar" clear-text="Borrar" current-text="Hoy">
+                                        <!--<span class="input-group-btn"><button type="button" class="btn btn-default clear"><i class="fa fa-remove"></i></button></span>-->
                                     </div>
                                 </td>
                                 <td class="col-lg-2">
                                     <div class="input-group">
-                                        <input type="text" class="form-control datepicker fecha-fin" data-provide="datepicker" placeholder="dd/mm/yyyy" readonly style="background-color: white">
-                                        <span class="input-group-btn"><button type="button" class="btn btn-default clear"><i class="fa fa-remove"></i></button></span>
+                                        <span class="input-group-addon" ng-click="tarifa.HASTA_OPENED = !tarifa.HASTA_OPENED"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" class="form-control datepicker" ng-change="setMaxDate(tarifa)" uib-datepicker-popup="yyyy-MM-dd" datepicker-options="tarifa.HASTA_OPTIONS" is-open="tarifa.HASTA_OPENED" ng-model="tarifa.FECHA_FIN" placeholder="aaaa-mm-dd" readonly style="background-color: white" close-text="Cerrar" clear-text="Borrar" current-text="Hoy">
+                                        <!--<span class="input-group-btn"><button type="button" class="btn btn-default clear"><i class="fa fa-remove"></i></button></span>-->
                                     </div>
                                 </td>
-                                <td class="col-lg-2 valor-cell text-right" style="font-size: large"></td>
+                                <td class="col-lg-2 text-right" style="font-size: large">{{ tarifa.VALOR | currency: tarifa.SIMBOLO : 2 }}</td>
                                 <td class="col-lg-1 text-center"><button ng-click="nuevoPasavante.removeRate($index)" type="button" class="btn btn-danger" title="Eliminar tarifa"><i class="fa fa-remove"></i></button> </td>
                             </tr>
                             </tbody>
                             <tfoot>
                             <tr>
-                                <td class="col-lg-5"></td>
+                                <td class="col-lg-1"></td>
+                                <td class="col-lg-4"></td>
                                 <td class="col-lg-2"></td>
                                 <td class="col-lg-2"></td>
                                 <td class="col-lg-2"></td>
@@ -85,7 +90,7 @@
             </div>
             <div class="form-group col-lg-12">
                 <div class="input-group col-lg-1 pull-right">
-                    <button id="guardarPasavante" type="button" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
+                    <button id="guardarPasavante" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
                 </div>
                 <div class="input-group col-lg-1 pull-right">
                     <button id="cancelarCambios" type="button" class="btn btn-default"><i class="fa fa-remove"></i> Cancelar</button>
@@ -104,9 +109,9 @@
                     <td>Editar</td>
                     <td><strong>Sitio</strong></td>
                     <td><strong>Tarifa</strong></td>
-                    <td class="text-center"><strong>Fecha</strong></td>
+                    <td class="text-center"><strong>Fecha de baja</strong></td>
                     <td class="text-right"><strong>Valor tarifa</strong></td>
-                    <td class="text-center"><strong>Dar de baja</strong></td>
+                    <td class="text-center"><strong>Modificar</strong></td>
                     <td class="text-right"><strong>Total</strong></td>
                 </tr>
                 </thead>
@@ -121,14 +126,17 @@
                     <td class="col-lg-1"></td>
                     <td class="col-lg-1 text-right"><span ng-show="$first"><strong>{{ pasavante.VALOR_TOTAL | currency: '$' : 2 }}</strong></span></td>
                 </tr>
-                <tr ng-show="terminal.DETALLE" ng-repeat="tarifa in terminal.TARIFAS" ng-class="tarifa.FECHA_HASTA < fecha ? 'bg-danger' : ''">
+                <tr ng-show="terminal.DETALLE" ng-repeat="tarifa in terminal.TARIFAS">
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td>{{ tarifa.CODIGO_TARIFA + ' - ' + tarifa.DESCRIPCION }}</td>
-                    <td class="text-center">{{ tarifa.FECHA_TARIFA | date: 'yyyy-MM-dd' }}</td>
+                    <td ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.CODIGO_TARIFA + ' - ' + tarifa.DESCRIPCION }}</td>
+                    <td class="text-center"><span ng-show="tarifa.FECHA_FIN != null" ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.FECHA_FIN | date: 'yyyy-MM-dd' }}</span></td>
                     <td class="text-right">{{ tarifa.VALOR | currency: '$' : 2 }}</td>
-                    <td class="text-center"><button class="btn btn-danger" ng-click="disableRate(pasavante, tarifa.ID)"><i class="fa fa-remove"></i></button></td>
+                    <td class="text-center">
+                        <button ng-hide="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-danger" ng-click="disableRate(tarifa)" title="Dar de baja"><i class="fa fa-remove"></i></button>
+                        <button ng-show="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-primary" ng-click="enableRate(tarifa)" title="Habilitar tarifa"><i class="fa fa-check"></i></button>
+                    </td>
                     <td></td>
                 </tr>
                 </tbody>
