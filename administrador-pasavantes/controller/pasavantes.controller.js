@@ -16,6 +16,10 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
     $scope.muelles = [];
     $scope.traficos = [];
 
+    $scope.searchText = '';
+
+    $scope.pasavanteGuardado = false;
+
     localStorageService.get('muelles').forEach(function(dataMuelle){
         $scope.muelles[dataMuelle.CODIGO_MUELLE] = dataMuelle;
     });
@@ -26,20 +30,23 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
         $scope.tarifas[tarifaData.ID_TARIFA] = new Tarifa(tarifaData);
     });
 
-    pasavantesFactory.getPasavantes().then(function(pasavantes){
-        $scope.pasavantes = pasavantes;
-        $scope.pasavantes.forEach(function(pasavante){
-            pasavante.NAVEGACION = $scope.traficos[pasavante.ID_TIPO_NAVEGACION].DESC_TRAFICO;
-            pasavante.TERMINALES.forEach(function(muelle){
-                muelle.MUELLE = $scope.muelles[muelle.ID_TERMINAL].DESCRIPCION_MUELLE;
-                muelle.TARIFAS.forEach(function(tarifa){
-                    tarifa.CODIGO_TARIFA = $scope.tarifas[tarifa.ID_TARIFA].CODIGO_TARIFA
+    function cargarPasavantes (){
+        pasavantesFactory.getPasavantes().then(function(pasavantes){
+            console.log(pasavantes);
+            $scope.pasavantes = pasavantes;
+            $scope.pasavantes.forEach(function(pasavante){
+                pasavante.NAVEGACION = $scope.traficos[pasavante.ID_TIPO_NAVEGACION].DESC_TRAFICO;
+                pasavante.TERMINALES.forEach(function(muelle){
+                    muelle.MUELLE = $scope.muelles[muelle.ID_TERMINAL].DESCRIPCION_MUELLE;
+                    muelle.TARIFAS.forEach(function(tarifa){
+                        tarifa.CODIGO_TARIFA = $scope.tarifas[tarifa.ID_TARIFA].CODIGO_TARIFA
+                    })
                 })
             })
-        })
-    }, function(error){
-        console.log(error)
-    });
+        }, function(error){
+            console.log(error)
+        });
+    }
 
     $scope.setNavegacion = function(item, model, label, event){
         $scope.nuevoPasavante.ID_TIPO_NAVEGACION = item.ID_TRAFICO;
@@ -47,7 +54,12 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
 
     $scope.setMuelle = function(item, model, label, event){
         $scope.nuevoPasavante.TERMINALES[0].ID_TERMINAL = item.CODIGO_MUELLE;
+    };
 
+    $scope.setMinimo = function(index){
+        for (var i = 0; i < $scope.nuevoPasavante.TERMINALES[0].TARIFAS.length; i++){
+            if (index != i) $scope.nuevoPasavante.TERMINALES[0].TARIFAS[i].MINIMO = false;
+        }
     };
 
     $scope.setTarifa = function(item, model, label, event, index){
@@ -57,6 +69,16 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
         $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].SIMBOLO = item.SIMBOLO;
         $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].CODIGO_AFIP = item.CODIGO_AFIP;
         $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].getValor();
+    };
+
+    $scope.unsetTarifa = function(index){
+        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].BACKUP = '';
+        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].ID_TARIFA = '';
+        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].CODIGO_TARIFA = '';
+        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].DESCRI_TARIFA = '';
+        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].SIMBOLO = '';
+        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].CODIGO_AFIP = '';
+        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].VALOR = '';
     };
 
     $scope.setMinDate = function(tarifa){
@@ -99,8 +121,28 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
         }, function(error){
             console.log(error)
         })
-    }
+    };
 
+    $scope.guardarPasavante = function(){
+        $scope.pasavanteGuardado = true;
+        $scope.nuevoPasavante.saveChanges().then(function(result){
+            console.log($scope.nuevoPasavante);
+            if (result.status == 'OK'){
+                dialogsService.notify('Pasavantes', 'Todas las tarifas se guardaron correctamente');
+            } else {
+                dialogsService.notify('Pasavantes', 'Se produjeron errores en ' + result.data + 'tarifas.');
+            }
+            cargarPasavantes();
+        }, function(error){
+            console.log($scope.nuevoPasavante);
+            if (error.status == 'NORATES'){
+                dialogsService.notify('Pasavantes', error.message);
+            } else {
+                dialogsService.error('Pasavantes', error.message);
+            }
+        })
+    };
 
+    cargarPasavantes();
 
 }]);

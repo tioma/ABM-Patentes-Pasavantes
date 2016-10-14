@@ -7,12 +7,14 @@
                     <div class="input-group">
                         <label for="tipoNavegacionSelect" class="input-group-addon"><strong>Tipo navegación</strong></label>
                         <input id="tipoNavegacionSelect" type="text" ng-model="nuevoPasavante.NAVEGACION" uib-typeahead="trafico as trafico.DESC_TRAFICO for trafico in traficos | filter:$viewValue | limitTo:10" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Ingresar tipo de navegación" typeahead-on-select="setNavegacion($item, $model, $label, $event)" ng-required="true">
+                        <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="nuevoPasavante.NAVEGACION = ''; nuevoPasavante.ID_TIPO_NAVEGACION = 0"><i class="fa fa-remove"></i></button></span>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <label for="sitioSelect" class="input-group-addon"><strong>Sitio</strong></label>
                         <input id="sitioSelect" type="text" ng-model="nuevoPasavante.TERMINALES[0].MUELLE" uib-typeahead="muelle as muelle.CODIGO_MUELLE + ' - ' + muelle.DESCRIPCION_MUELLE + ' (' + muelle.SHORT_TERMINAL + ')' for muelle in muelles | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Ingresar sitio de atraque" typeahead-on-select="setMuelle($item, $model, $label, $event)" ng-required="true">
+                        <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="nuevoPasavante.TERMINALES[0].MUELLE = ''; nuevoPasavante.TERMINALES[0].ID_TERMINAL = 0"><i class="fa fa-remove"></i></button></span>
                     </div>
                 </div>
                 <!--<div class="panel panel-info">
@@ -48,13 +50,17 @@
                                 <td><strong>Hasta</strong></td>
                                 <td class="text-right"><strong>Total</strong></td>
                                 <td class="text-center"><strong>Eliminar</strong></td>
+                                <td ng-if="pasavanteGuardado">Estado</td>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="tarifa in nuevoPasavante.TERMINALES[0].TARIFAS track by $index">
-                                <td class="col-lg-1 text-center"><input type="radio"  name="pasavanteMinimo" ng-model="tarifa.MINIMO" class="radio text-center"></td>
+                            <tr ng-repeat="tarifa in nuevoPasavante.TERMINALES[0].TARIFAS track by $index" ng-class="nuevoPasavante.TERMINALES[0].TARIFAS[$index].STATUS == 'ERROR' ? 'error-tarifa' : ''">
+                                <td class="col-lg-1 text-center"><input type="checkbox" ng-model="tarifa.MINIMO" ng-change="setMinimo($index)" class="radio text-center"></td>
                                 <td class="col-lg-4">
-                                    <input type="text" ng-model="tarifa.BACKUP" uib-typeahead="tarifa as tarifa.formatData() for tarifa in tarifas | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Seleccione una tarifa" typeahead-on-select="setTarifa($item, $model, $label, $event, $index)" ng-required="true">
+                                    <div class="input-group">
+                                        <input type="text" ng-model="tarifa.BACKUP" uib-typeahead="tarifa as tarifa.formatData() for tarifa in tarifas | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Seleccione una tarifa" typeahead-on-select="setTarifa($item, $model, $label, $event, $index)" ng-required="true">
+                                        <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="unsetTarifa($index)"><i class="fa fa-remove"></i></button></span>
+                                    </div>
                                 </td>
                                 <td class="col-lg-2">
                                     <div class="input-group">
@@ -72,6 +78,10 @@
                                 </td>
                                 <td class="col-lg-2 text-right" style="font-size: large">{{ tarifa.VALOR | currency: tarifa.SIMBOLO : 2 }}</td>
                                 <td class="col-lg-1 text-center"><button ng-click="nuevoPasavante.removeRate($index)" type="button" class="btn btn-danger" title="Eliminar tarifa"><i class="fa fa-remove"></i></button> </td>
+                                <td ng-if="pasavanteGuardado">
+                                    <i ng-show="tarifa.STATUS == 'OK'" class="fa fa-check text-success"></i>
+                                    <i ng-show="tarifa.STATUS == 'ERROR'" class="fa fa-remove text-danger"></i>
+                                </td>
                             </tr>
                             </tbody>
                             <tfoot>
@@ -102,7 +112,12 @@
     <div class = "panel panel-primary">
         <div class = "panel-heading panel-primary">PASAVANTES REGISTRADOS</div>
         <div class = "panel-body">
-            <table class="table" id="listado_pasavantes" ng-repeat="pasavante in pasavantes">
+            <div class="input-group col-lg-12">
+                <input type="text" class="form-control" ng-model="searchText" placeholder="Búsqueda...">
+                <span class="input-group-btn" title="Borrar"><button type="button" class="btn btn-default" ng-click="searchText = ''"><i class="fa fa-remove"></i></button></span>
+            </div>
+            <br>
+            <table class="table" id="listado_pasavantes" ng-repeat="pasavante in pasavantes | filter: searchText">
                 <thead ng-show="$first">
                 <tr>
                     <td><strong>Tipo navegación</strong></td>
