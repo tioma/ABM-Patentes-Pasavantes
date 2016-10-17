@@ -46,57 +46,96 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function
 			var url = APP_CONFIG.SERVER_URL + '/pasavantes/pasavante/disable/' + this.ID;
 			var tarifa = this;
 			$http.put(url).then(function(response){
-				console.log(response);
+				//console.log(response);
 				if (response.data.status == 'OK'){
 					tarifa.FECHA_FIN = new Date();
 					deferred.resolve(response.data);
 				} else {
-					deferred.reject(response);
+					deferred.reject(response.data);
 				}
 			}, function(response){
-				deferred.reject(response)
+				deferred.reject(response.data)
 			});
 			return deferred.promise;
 		},
-		enable: function(){
+		buildAdapterObject: function(navegacion, muelle){
+			var adapterObject = {};
+			adapterObject.id_tipo_navegacion = parseInt(navegacion);
+			adapterObject.id_terminal = parseInt(muelle);
+			adapterObject.id_tarifa = this.ID_TARIFA;
+			if (this.FECHA_INICIO) adapterObject.fecha_inicio = this.FECHA_INICIO;
+			if (this.FECHA_FIN) adapterObject.fecha_fin = this.FECHA_FIN;
+			if (this.MINIMO) adapterObject.minimo = 1;
+			return adapterObject;
+		},
+		enable: function(navegacion, muelle){
 			var deferred = $q.defer();
 			var url = APP_CONFIG.SERVER_URL + '/pasavantes/pasavante/dates/' + this.ID;
+			var adapterObject = {};
+			adapterObject.id_tipo_navegacion = parseInt(navegacion);
+			adapterObject.id_terminal = parseInt(muelle);
+			if (this.FECHA_INICIO) adapterObject.fecha_inicio = this.FECHA_INICIO;
+			if (this.MINIMO) adapterObject.minimo = 1;
 			var tarifa = this;
-			$http.put(url).then(function(response){
+			$http.put(url, adapterObject).then(function(response){
 				if (response.data.status == 'OK'){
 					tarifa.FECHA_FIN = null;
 					deferred.resolve(response.data);
 				} else {
-					deferred.reject(response);
+					deferred.reject(response.data);
 				}
 			}, function(response){
-				deferred.reject(response);
+				deferred.reject(response.data);
 			});
 			return deferred.promise;
 		},
 		savePasavante: function(navegacion, muelle){
 			var deferred = $q.defer();
-			var adapterObject = {};
-			var url = APP_CONFIG.SERVER_URL + '/pasavantes/pasavante';
-			adapterObject.id_tipo_navegacion = parseInt(navegacion);
-			adapterObject.id_terminal = parseInt(muelle);
-			adapterObject.id_tarifa = this.ID_TARIFA;
-			if (this.FECHA_INICIO != '') adapterObject.fecha_inicio = this.FECHA_INICIO;
-			if (this.FECHA_FIN != '') adapterObject.fecha_fin = this.FECHA_FIN;
-			if (this.MINIMO) adapterObject.minimo = 1;
 			var tarifa = this;
-			$http.post(url, adapterObject).then(function(response){
-				if (response.data.status == 'OK'){
-					tarifa.STATUS = 'OK';
-					tarifa.ID = response.data.data.ID;
-					deferred.resolve(true);
-				}
-			}, function(response){
-				tarifa.STATUS = 'ERROR';
-				console.log(response);
-				deferred.resolve(false)
-			});
+			var adapterObject = this.buildAdapterObject(navegacion, muelle);
+			if (this.ID){
+				//console.log('se updatea');
+				this.updateRate(adapterObject).then(function(response){
+					if (response.data.status == 'OK'){
+						tarifa.STATUS = 'OK';
+						deferred.resolve(true);
+					} else {
+						tarifa.STATUS = 'ERROR';
+						deferred.resolve(false);
+					}
+				}, function(response){
+					//console.log(response);
+					tarifa.STATUS = 'ERROR';
+					tarifa.ERROR = response.data.message;
+					deferred.resolve(false);
+				})
+			} else {
+				//console.log('esta se agrega');
+				this.addRate(adapterObject).then(function(response){
+					if (response.data.status == 'OK'){
+						tarifa.STATUS = 'OK';
+						tarifa.ID = response.data.data.ID;
+						deferred.resolve(true);
+					} else {
+						tarifa.STATUS = 'ERROR';
+						deferred.resolve(false);
+					}
+				}, function(response){
+					tarifa.STATUS = 'ERROR';
+					//console.log(response);
+					tarifa.ERROR = response.data.message;
+					deferred.resolve(false)
+				});
+			}
 			return deferred.promise;
+		},
+		addRate: function(adapterObject){
+			var url = APP_CONFIG.SERVER_URL + '/pasavantes/pasavante';
+			return $http.post(url, adapterObject);
+		},
+		updateRate: function(adapterObject){
+			var url = APP_CONFIG.SERVER_URL + '/pasavantes/pasavante/dates/' + this.ID;
+			return $http.put(url, adapterObject);
 		}
 	};
 

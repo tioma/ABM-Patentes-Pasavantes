@@ -41,7 +41,7 @@
                 <div class = "panel panel-primary">
                     <div class = "panel-heading panel-primary">TARIFAS</div>
                     <div class = "panel-body">
-                        <table class="table table-striped" id="ratesTable">
+                        <table class="table" id="ratesTable">
                             <thead>
                             <tr>
                                 <td><strong>Mínimo a facturar</strong></td>
@@ -50,11 +50,10 @@
                                 <td><strong>Hasta</strong></td>
                                 <td class="text-right"><strong>Total</strong></td>
                                 <td class="text-center"><strong>Eliminar</strong></td>
-                                <td ng-if="pasavanteGuardado">Estado</td>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="tarifa in nuevoPasavante.TERMINALES[0].TARIFAS track by $index" ng-class="nuevoPasavante.TERMINALES[0].TARIFAS[$index].STATUS == 'ERROR' ? 'error-tarifa' : ''">
+                            <tr ng-repeat="tarifa in nuevoPasavante.TERMINALES[0].TARIFAS track by $index" uib-popover="{{ nuevoPasavante.TERMINALES[0].TARIFAS[$index].ERROR }}" popover-trigger="'mouseenter'" ng-class="nuevoPasavante.TERMINALES[0].TARIFAS[$index].STATUS == 'ERROR' ? 'error-tarifa' : ''">
                                 <td class="col-lg-1 text-center"><input type="checkbox" ng-model="tarifa.MINIMO" ng-change="setMinimo($index)" class="radio text-center"></td>
                                 <td class="col-lg-4">
                                     <div class="input-group">
@@ -66,22 +65,16 @@
                                     <div class="input-group">
                                         <span class="input-group-addon" ng-click="tarifa.DESDE_OPENED = !tarifa.DESDE_OPENED"><i class="fa fa-calendar"></i></span>
                                         <input type="text" class="form-control datepicker" ng-change="setMinDate(tarifa)" uib-datepicker-popup="yyyy-MM-dd" datepicker-options="tarifa.DESDE_OPTIONS" is-open="tarifa.DESDE_OPENED" ng-model="tarifa.FECHA_INICIO" placeholder="aaaa-mm-dd" readonly style="background-color: white" close-text="Cerrar" clear-text="Borrar" current-text="Hoy">
-                                        <!--<span class="input-group-btn"><button type="button" class="btn btn-default clear"><i class="fa fa-remove"></i></button></span>-->
                                     </div>
                                 </td>
                                 <td class="col-lg-2">
                                     <div class="input-group">
                                         <span class="input-group-addon" ng-click="tarifa.HASTA_OPENED = !tarifa.HASTA_OPENED"><i class="fa fa-calendar"></i></span>
                                         <input type="text" class="form-control datepicker" ng-change="setMaxDate(tarifa)" uib-datepicker-popup="yyyy-MM-dd" datepicker-options="tarifa.HASTA_OPTIONS" is-open="tarifa.HASTA_OPENED" ng-model="tarifa.FECHA_FIN" placeholder="aaaa-mm-dd" readonly style="background-color: white" close-text="Cerrar" clear-text="Borrar" current-text="Hoy">
-                                        <!--<span class="input-group-btn"><button type="button" class="btn btn-default clear"><i class="fa fa-remove"></i></button></span>-->
                                     </div>
                                 </td>
                                 <td class="col-lg-2 text-right" style="font-size: large">{{ tarifa.VALOR | currency: tarifa.SIMBOLO : 2 }}</td>
                                 <td class="col-lg-1 text-center"><button ng-click="nuevoPasavante.removeRate($index)" type="button" class="btn btn-danger" title="Eliminar tarifa"><i class="fa fa-remove"></i></button> </td>
-                                <td ng-if="pasavanteGuardado">
-                                    <i ng-show="tarifa.STATUS == 'OK'" class="fa fa-check text-success"></i>
-                                    <i ng-show="tarifa.STATUS == 'ERROR'" class="fa fa-remove text-danger"></i>
-                                </td>
                             </tr>
                             </tbody>
                             <tfoot>
@@ -103,7 +96,7 @@
                     <button id="guardarPasavante" type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Guardar</button>
                 </div>
                 <div class="input-group col-lg-1 pull-right">
-                    <button id="cancelarCambios" type="button" class="btn btn-default"><i class="fa fa-remove"></i> Cancelar</button>
+                    <button id="cancelarCambios" type="button" class="btn btn-default" ng-click="limpiarFormulario()"><i class="fa fa-remove"></i> Cancelar</button>
                 </div>
             </div>
         </fieldset>
@@ -130,10 +123,10 @@
                     <td class="text-right"><strong>Total</strong></td>
                 </tr>
                 </thead>
-                <tbody ng-repeat="terminal in pasavante.TERMINALES">
+                <tbody ng-repeat="terminal in pasavante.TERMINALES | filter: searchText track by $index">
                 <tr ng-click="terminal.DETALLE = !terminal.DETALLE" class="clickeable-row" ng-class="terminal.DETALLE ? 'selected-row' : ''">
                     <td class="col-lg-2"><span ng-show="$first"><strong>{{ pasavante.NAVEGACION }}</strong></span></td>
-                    <td class="col-lg-1"><button class="btn btn-primary"><i class="fa fa-edit"></i></button></td>
+                    <td class="col-lg-1"><button type="button" ng-click="editarPasavante(pasavante, $index, $event)" class="btn btn-primary"><i class="fa fa-edit"></i></button></td>
                     <td class="col-lg-2"><strong>{{terminal.ID_TERMINAL + ' - ' + terminal.MUELLE}}</strong></td>
                     <td class="col-lg-3"></td>
                     <td class="col-lg-1"></td>
@@ -144,13 +137,13 @@
                 <tr ng-show="terminal.DETALLE" ng-repeat="tarifa in terminal.TARIFAS">
                     <td></td>
                     <td></td>
-                    <td></td>
+                    <td><span ng-show="tarifa.MINIMO">Mínimo a facturar <i class="fa fa-arrow-right"></i></span></td>
                     <td ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.CODIGO_TARIFA + ' - ' + tarifa.DESCRIPCION }}</td>
                     <td class="text-center"><span ng-show="tarifa.FECHA_FIN != null" ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.FECHA_FIN | date: 'yyyy-MM-dd' }}</span></td>
                     <td class="text-right">{{ tarifa.VALOR | currency: '$' : 2 }}</td>
                     <td class="text-center">
                         <button ng-hide="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-danger" ng-click="disableRate(tarifa)" title="Dar de baja"><i class="fa fa-remove"></i></button>
-                        <button ng-show="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-primary" ng-click="enableRate(tarifa)" title="Habilitar tarifa"><i class="fa fa-check"></i></button>
+                        <button ng-show="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-primary" ng-click="enableRate(pasavante.ID_TIPO_NAVEGACION, terminal.ID_TERMINAL, tarifa)" title="Habilitar tarifa"><i class="fa fa-check"></i></button>
                     </td>
                     <td></td>
                 </tr>
