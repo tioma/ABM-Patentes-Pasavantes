@@ -9,7 +9,6 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
     $scope.fecha = new Date();
 
     $scope.nuevoPasavante = new Pasavante();
-    $scope.tarifaMinima = new Tarifa();
 
     $scope.tarifas = [];
     $scope.pasavantes = [];
