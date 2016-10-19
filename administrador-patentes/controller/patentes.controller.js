@@ -146,24 +146,18 @@ administradorPatentes.controller('patentesCtrl', ['$scope', 'Patente', 'Tarifa',
             }
         })
     };
-/*
+
     $scope.editarPatente = function(patente, event){
         event.stopPropagation();
-        var adapterObject = {
-            ID_TIPO_NAVEGACION: patente.ID_TIPO_NAVEGACION,
-            NAVEGACION: $scope.traficos[patente.ID_TIPO_NAVEGACION],
-            TERMINALES: [
-                angular.copy(patente.TERMINALES[indexTerminal])
-            ]
-        };
+        var adapterObject = angular.copy(patente);
+        adapterObject.ARBOLADURA = $scope.embarcaciones[patente.ID_TIPO_EMBARCACION];
 
-        adapterObject.MUELLE = $scope.muelles[adapterObject.ID_TERMINAL];
         for (var i = 0; i < adapterObject.TARIFAS.length; i++){
             adapterObject.TARIFAS[i].BACKUP = $scope.tarifas[adapterObject.TARIFAS[i].ID_TARIFA]
         }
 
-        $scope.nuevaPatente = new Pasavante(adapterObject);
-    };*/
+        $scope.nuevaPatente = new Patente(adapterObject);
+    };
 
     $scope.limpiarFormulario = function(){
         $scope.nuevaPatente = new Patente();
