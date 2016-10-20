@@ -56,26 +56,18 @@ $nuevafecha = date('Y-m-d', $nuevafecha);
 	<meta name="author" content="">
 
 	<title>Administrador Tarifas Pasavantes</title>
+	<!-- build:css -->
 	<link rel="stylesheet" href="../css/bootstrap.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="../css/app.css">
-
-	<style>
-		body {
-			padding-top: 20px;
-			padding-bottom: 20px;
-		}
-		.navbar {
-			margin-bottom: 20px;
-		}
-	</style>
-
+	<!-- endbuild -->
+	<!-- build:bower -->
 	<script src="../bower_components/angular/angular.js"></script>
 	<script src="../bower_components/angular-animate/angular-animate.js"></script>
 	<script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
 	<script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 	<script src="../bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
-
+	<!-- endbuild -->
+	<!-- build:app -->
 	<script src="app.js"></script>
 	<script src="config.app.js"></script>
 
@@ -88,6 +80,7 @@ $nuevafecha = date('Y-m-d', $nuevafecha);
 	<script src="controller/pasavantes.controller.js"></script>
 
 	<script src="service/dialogs/dialogs.js"></script>
+	<!-- endbuild -->
 </head>
 <body class="container-fluid col-lg-12">
 
@@ -107,8 +100,8 @@ $nuevafecha = date('Y-m-d', $nuevafecha);
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="liquidaciones.php?fecha=<?php echo $nuevafecha; ?>"><i class="fa fa-calendar" aria-hidden="true"></i> Hoy</a></li>
-				<li><a href="liquidaciones.php?todo"><i class="fa fa-list-ol" aria-hidden="true"></i> Todo</a></li>
+				<li><a href="liquidaciones.php?fecha=<?php echo $nuevafecha; ?>"><i class="glyphicon glyphicon-calendar" aria-hidden="true"></i> Hoy</a></li>
+				<li><a href="liquidaciones.php?todo"><i class="glyphicon glyphicon-list" aria-hidden="true"></i> Todo</a></li>
 				<li class="dropdown" uib-dropdown>
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" uib-dropdown-toggle>Menu <span class="caret"></span></a>
 					<ul class="dropdown-menu">

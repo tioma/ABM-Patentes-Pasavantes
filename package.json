@@ -1,0 +1,27 @@
+{
+  "name": "abm-patentes-pasavantes",
+  "version": "1.0.0",
+  "description": "ABM de configuración para liquidación de patentes y pasavantes en AGP",
+  "main": "gulpfile.js",
+  "devDependencies": {
+    "gulp-clean-css": "^2.0.13",
+    "gulp": "^3.9.1",
+    "gulp-html-replace": "^1.6.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-minify": "^0.0.14",
+    "gulp-rename": "^1.2.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tioma/ABM-Patentes-Pasavantes.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tioma/ABM-Patentes-Pasavantes/issues"
+  },
+  "homepage": "https://github.com/tioma/ABM-Patentes-Pasavantes#readme"
+}

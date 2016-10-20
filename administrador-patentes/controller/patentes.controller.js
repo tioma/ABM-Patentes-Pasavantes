@@ -27,7 +27,6 @@ administradorPatentes.controller('patentesCtrl', ['$scope', 'Patente', 'Tarifa',
 
     function cargarPatentes (){
         patentesFactory.getPatentes().then(function(patentes){
-            console.log(patentes);
             $scope.patentes = patentes;
             $scope.patentes.forEach(function(patente){
                 patente.ARBOLADURA = $scope.embarcaciones[patente.ID_TIPO_EMBARCACION].ARBOLADURA;

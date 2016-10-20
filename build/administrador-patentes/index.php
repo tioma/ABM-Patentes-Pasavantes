@@ -56,31 +56,17 @@ $nuevafecha = date('Y-m-d', $nuevafecha);
 	<meta name="author" content="">
 
 	<title>Administrador Tarifas Patentes</title>
-	<!-- build:css -->
-	<link rel="stylesheet" href="../css/bootstrap.css">
-	<link rel="stylesheet" href="../css/app.css">
-	<!-- endbuild -->
-	<!-- build:bower -->
-	<script src="../bower_components/angular/angular.js"></script>
-	<script src="../bower_components/angular-animate/angular-animate.js"></script>
-	<script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-	<script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-	<script src="../bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
-	<!-- endbuild -->
-	<!-- build:app -->
-	<script src="app.js"></script>
-	<script src="config.app.js"></script>
+	<link rel="stylesheet" href="../css/bootstrap.min.css">
+	<link rel="stylesheet" href="../css/app.min.css">
 
-	<script src="class/patentes.class.js"></script>
-	<script src="class/tarifas.class.js"></script>
+	<script src="../lib/angular/angular.min.js"></script>
+	<script src="../lib/angular-animate/angular-animate.min.js"></script>
+	<script src="../lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+	<script src="../lib/angular-local-storage/angular-local-storage.min.js"></script>
+	<script src="../lib/angular-ui-router/angular-ui-router.min.js"></script>
 
-	<script src="factory/localStorage.factory.js"></script>
-	<script src="factory/patentes.factory.js"></script>
+	<script src="app-min.js"></script>
 
-	<script src="controller/patentes.controller.js"></script>
-
-	<script src="service/dialogs/dialogs.js"></script>
-	<!-- endbuild -->
 </head>
 <body class="container-fluid col-lg-12">
 

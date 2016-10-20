@@ -11,12 +11,10 @@ administradorPasavantes.factory('pasavantesFactory', ['$http', '$q', 'APP_CONFIG
 			var deferred = $q.defer();
 			var url = APP_CONFIG.SERVER_URL + '/pasavantes';
 			$http.get(url).then(function(response){
-				console.log(response);
 				if (response.data.status == 'OK'){
 					var pasavantesArray = [];
 					response.data.data.forEach(function(pasavanteData){
 						var nuevoPasavante = new Pasavante(pasavanteData);
-
 						pasavantesArray.push(nuevoPasavante)
 					});
 					deferred.resolve(pasavantesArray);
@@ -24,7 +22,6 @@ administradorPasavantes.factory('pasavantesFactory', ['$http', '$q', 'APP_CONFIG
 					deferred.reject(response.data);
 				}
 			}, function(response){
-				console.log(response);
 				deferred.reject(response.data);
 			});
 			return deferred.promise

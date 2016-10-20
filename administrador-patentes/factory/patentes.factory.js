@@ -8,12 +8,10 @@ administradorPatentes.factory('patentesFactory', ['$http', '$q', 'APP_CONFIG', '
 			var deferred = $q.defer();
 			var url = APP_CONFIG.SERVER_URL + '/patentes';
 			$http.get(url).then(function(response){
-				console.log(response);
 				if (response.data.status == 'OK'){
 					var patentesArray = [];
 					response.data.data.forEach(function(patenteData){
 						var nuevoPatente = new Patente(patenteData);
-
 						patentesArray.push(nuevoPatente)
 					});
 					deferred.resolve(patentesArray);
@@ -21,7 +19,6 @@ administradorPatentes.factory('patentesFactory', ['$http', '$q', 'APP_CONFIG', '
 					deferred.reject(response.data);
 				}
 			}, function(response){
-				console.log(response);
 				deferred.reject(response.data);
 			});
 			return deferred.promise

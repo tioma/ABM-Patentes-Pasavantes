@@ -19,7 +19,6 @@ administradorPatentes.factory('localStorageFactory', ['$http', '$q', 'APP_CONFIG
 			var deferred = $q.defer();
 			var url = APP_CONFIG.API_ENDPOINT + '/ws-embarcaciones.php';
 			$http.get(url).then(function(response){
-				console.log(response.data);
 				localStorageService.set('embarcaciones', response.data);
 				deferred.resolve();
 			}, function(response){
