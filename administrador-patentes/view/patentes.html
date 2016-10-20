@@ -6,7 +6,7 @@
                 <div class="form-group">
                     <div class="input-group">
                         <label for="tipoEmbarcacionSelect" class="input-group-addon"><strong>Arboladura</strong></label>
-                        <input id="tipoEmbarcacionSelect" type="text" ng-model="nuevaPatente.ARBOLADURA" uib-typeahead="embarcacion as embarcacion.ARBOLADURA for embarcacion in embarcaciones | filter:$viewValue | limitTo:10" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Ingresar arboladura" typeahead-on-select="setArboladura($item, $model, $label, $event)" ng-required="true">
+                        <input id="tipoEmbarcacionSelect" type="text" ng-model="nuevaPatente.ARBOLADURA" uib-typeahead="embarcacion as embarcacion.ARBOLADURA for embarcacion in embarcaciones | filter:$viewValue | limitTo:10" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Ingresar arboladura" typeahead-on-select="setArboladura($item, $model, $label, $event)" ng-required="true" autocomplete="off">
                         <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="nuevaPatente.ARBOLADURA = ''; nuevaPatente.ID_TIPO_EMBARCACION = 0"><i class="glyphicon glyphicon-remove"></i></button></span>
                     </div>
                 </div>
@@ -31,7 +31,7 @@
                                 <td class="col-lg-1 text-center"><input type="checkbox" ng-model="tarifa.MINIMO" ng-change="setMinimo($index)" class="radio text-center"></td>
                                 <td class="col-lg-4">
                                     <div class="input-group">
-                                        <input type="text" ng-model="tarifa.BACKUP" uib-typeahead="tarifa as tarifa.formatData() for tarifa in tarifas | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Seleccione una tarifa" typeahead-on-select="setTarifa($item, $model, $label, $event, $index)" ng-required="true">
+                                        <input type="text" ng-model="tarifa.BACKUP" uib-typeahead="tarifa as tarifa.formatData() for tarifa in tarifas | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Seleccione una tarifa" typeahead-on-select="setTarifa($item, $model, $label, $event, $index)" ng-required="true" autocomplete="off">
                                         <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="unsetTarifa($index)"><i class="glyphicon glyphicon-remove"></i></button></span>
                                     </div>
                                 </td>
