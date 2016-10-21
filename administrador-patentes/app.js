@@ -20,6 +20,17 @@ administradorPatentes.config(['$stateProvider', '$urlRouterProvider', 'localStor
 			embarcaciones: localStorageFactory.getShipTypes,
 			tarifas: localStorageFactory.getRates
 		}
+	}).state('error', {
+		url: '/error',
+		templateUrl: 'view/error.html'
+	})
+
+}]);
+
+administradorPatentes.run(['$rootScope', '$state', function($rootScope, $state){
+
+	$rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error){
+		$state.go('error')
 	})
 
 }]);

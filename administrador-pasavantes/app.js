@@ -21,6 +21,17 @@ administradorPasavantes.config(['$stateProvider', '$urlRouterProvider', 'localSt
 			muelles: localStorageFactory.getHarbors,
 			tarifas: localStorageFactory.getRates
 		}
+	}).state('error', {
+		url: '/error',
+		templateUrl: 'view/error.html'
+	})
+
+}]);
+
+administradorPasavantes.run(['$rootScope', '$state', function($rootScope, $state){
+
+	$rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error){
+		$state.go('error')
 	})
 
 }]);
