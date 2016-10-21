@@ -70,7 +70,7 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function
 		},
 		enable: function(navegacion, muelle){
 			var deferred = $q.defer();
-			var url = APP_CONFIG.SERVER_URL + '/pasavantes/pasavante/dates/' + this.ID;
+			var url = APP_CONFIG.SERVER_URL + '/pasavantes/pasavante/update/' + this.ID;
 			var adapterObject = {};
 			adapterObject.id_tipo_navegacion = parseInt(navegacion);
 			adapterObject.id_terminal = parseInt(muelle);
@@ -134,7 +134,7 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function
 			return $http.post(url, adapterObject);
 		},
 		updateRate: function(adapterObject){
-			var url = APP_CONFIG.SERVER_URL + '/pasavantes/pasavante/dates/' + this.ID;
+			var url = APP_CONFIG.SERVER_URL + '/pasavantes/pasavante/update/' + this.ID;
 			return $http.put(url, adapterObject);
 		}
 	};

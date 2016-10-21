@@ -69,7 +69,7 @@ administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function($
 		},
 		enable: function(embarcacion){
 			var deferred = $q.defer();
-			var url = APP_CONFIG.SERVER_URL + '/patentes/patente/dates/' + this.ID;
+			var url = APP_CONFIG.SERVER_URL + '/patentes/patente/update/' + this.ID;
 			var adapterObject = {};
 			adapterObject.id_tipo_embarcacion = parseInt(embarcacion);
 			if (this.FECHA_INICIO) adapterObject.fecha_inicio = this.FECHA_INICIO;
@@ -132,7 +132,7 @@ administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function($
 			return $http.post(url, adapterObject);
 		},
 		updateRate: function(adapterObject){
-			var url = APP_CONFIG.SERVER_URL + '/patentes/patente/dates/' + this.ID;
+			var url = APP_CONFIG.SERVER_URL + '/patentes/patente/update/' + this.ID;
 			return $http.put(url, adapterObject);
 		}
 	};
