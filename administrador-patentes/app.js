@@ -27,10 +27,15 @@ administradorPatentes.config(['$stateProvider', '$urlRouterProvider', 'localStor
 
 }]);
 
-administradorPatentes.run(['$rootScope', '$state', function($rootScope, $state){
+administradorPatentes.run(['$rootScope', '$state', '$window', function($rootScope, $state, $window){
 
 	$rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error){
 		$state.go('error')
-	})
+	});
+
+	$rootScope.goBack = function(){
+		console.log('hola');
+		$window.history.back(-1);
+	}
 
 }]);

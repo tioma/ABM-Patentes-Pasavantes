@@ -149,6 +149,7 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
         $scope.nuevoPasavante.saveChanges().then(function(result){
             if (result.status == 'OK'){
                 dialogsService.notify('Pasavantes', 'Todas las tarifas se guardaron correctamente');
+                $scope.limpiarFormulario();
             } else {
                 dialogsService.notify('Pasavantes', 'Se produjeron errores en ' + result.data + 'tarifas.');
             }

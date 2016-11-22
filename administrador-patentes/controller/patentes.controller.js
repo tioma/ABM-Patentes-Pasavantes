@@ -133,6 +133,7 @@ administradorPatentes.controller('patentesCtrl', ['$scope', 'Patente', 'Tarifa',
         $scope.nuevaPatente.saveChanges().then(function(result){
             if (result.status == 'OK'){
                 dialogsService.notify('Patentes', 'Todas las tarifas se guardaron correctamente');
+                $scope.limpiarFormulario();
             } else {
                 dialogsService.notify('Patentes', 'Se produjeron errores en ' + result.data + 'tarifas.');
             }

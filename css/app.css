@@ -1,3 +1,8 @@
+body {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
 .clickeable-row {
     cursor: pointer;
 }
@@ -18,11 +23,21 @@
     background-color: rgba(255, 100, 73, 0.64);
 }
 
-body {
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
-
 .navbar {
     margin-bottom: 20px;
+}
+
+.animated-row.ng-enter {
+    -webkit-animation: slideInUp 3s ;
+    animation: slideInUp 3s ;
+}
+
+.animated-row.ng-enter-stagger {
+    /* 200ms will be applied between each sucessive enter operation */
+    -webkit-animation-delay:0.1s;
+    animation-delay:0.1s;
+
+    /* this is here to avoid accidental CSS inheritance */
+    -webkit-animation-duration:0;
+    animation-duration:0;
 }

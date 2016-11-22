@@ -105,7 +105,7 @@
                 </tr>
                 </thead>
                 <tbody ng-repeat="terminal in pasavante.TERMINALES | filter: searchText track by $index">
-                <tr ng-click="terminal.DETALLE = !terminal.DETALLE" class="clickeable-row" ng-class="terminal.DETALLE ? 'selected-row' : ''">
+                <tr ng-click="terminal.DETALLE = !terminal.DETALLE" class="animate clickeable-row animated-row" ng-class="terminal.DETALLE ? 'selected-row' : ''">
                     <td class="col-lg-2"><span ng-show="$first"><strong>{{ pasavante.NAVEGACION }}</strong></span></td>
                     <td class="col-lg-1"><button type="button" ng-click="editarPasavante(pasavante, $index, $event)" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i></button></td>
                     <td class="col-lg-2"><strong>{{terminal.ID_TERMINAL + ' - ' + terminal.MUELLE}}</strong></td>

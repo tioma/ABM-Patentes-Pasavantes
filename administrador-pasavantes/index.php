@@ -59,6 +59,7 @@ $nuevafecha = date('Y-m-d', $nuevafecha);
 	<!-- build:css -->
 	<link rel="stylesheet" href="../css/bootstrap.css">
 	<link rel="stylesheet" href="../css/app.css">
+	<link rel="stylesheet" href="../bower_components/animate.css/animate.css">
 	<!-- endbuild -->
 	<!-- build:bower -->
 	<script src="../bower_components/angular/angular.js"></script>
@@ -100,18 +101,7 @@ $nuevafecha = date('Y-m-d', $nuevafecha);
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="liquidaciones.php?fecha=<?php echo $nuevafecha; ?>"><i class="glyphicon glyphicon-calendar" aria-hidden="true"></i> Hoy</a></li>
-				<li><a href="liquidaciones.php?todo"><i class="glyphicon glyphicon-list" aria-hidden="true"></i> Todo</a></li>
-				<li class="dropdown" uib-dropdown>
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" uib-dropdown-toggle>Menu <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-						<li><a href="#">Realizadas</a></li>
-						<li><a href="#">Pendientes del día</a></li>
-						<li><a href="#">Pendientes Total</a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="logout.php">Cerrar Sesión</a></li>
-					</ul>
-				</li>
+				<li><a ng-click="goBack()" class="nav navbar-btn"><i class="glyphicon glyphicon-arrow-left" aria-hidden="true"></i> Atrás</a></li>
 			</ul>
 		</div><!-- /.navbar-collapse -->
 	</div><!-- /.container-fluid -->
