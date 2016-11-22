@@ -10,7 +10,6 @@ var rename = require('gulp-rename');
 
 gulp.task('clean-css', function(){
 
-
     gulp.src(['css/app.css', 'css/bootstrap.css'])
         .pipe(cleanCss({processImport: false}))
         .pipe(rename({
@@ -29,7 +28,7 @@ gulp.task('html-replace', function(){
         gulp.src(indexFiles[html])
             .pipe(htmlReplace({
                 'css': {
-                    src: ['../css/bootstrap.min.css', '../css/app.min.css']
+                    src: ['../css/bootstrap.min.css', '../css/app.min.css', '../css/animate.min.css']
                 },
                 'bower': {
                     src: ['../lib/angular/angular.min.js',
@@ -52,6 +51,7 @@ gulp.task('copy-files', function(){
         "administrador-pasavantes/service/dialogs": "administrador-pasavantes/service/dialogs/*.html",
         "administrador-patentes/view": 'administrador-patentes/view/*.html',
         "administrador-patentes/service/dialogs": "administrador-patentes/service/dialogs/*.html",
+        "css": "bower_components/animate.css/animate.min.css",
         "fonts": "fonts/*"
     };
     for (var template in templates) {
