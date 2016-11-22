@@ -32,10 +32,9 @@ administradorPasavantes.run(['$rootScope', '$state', '$window', function($rootSc
 
 	$rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error){
 		$state.go('error')
-	})
+	});
 
 	$rootScope.goBack = function(){
-		console.log('hola');
 		$window.history.back();
 	}
 

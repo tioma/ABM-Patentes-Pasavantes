@@ -21,6 +21,13 @@ administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa',
 				this.VALOR_TOTAL += this.TARIFAS[i].VALOR;
 			}
 		},
+		setArboladura: function(idArboladura){
+			this.ID_TIPO_EMBARCACION = idArboladura;
+
+			for (var i = 0; i < this.TARIFAS.length; i++){
+				this.TARIFAS[i].ID = undefined;
+			}
+		},
 		addRate: function(){
 			this.TARIFAS.push(new Tarifa());
 		},

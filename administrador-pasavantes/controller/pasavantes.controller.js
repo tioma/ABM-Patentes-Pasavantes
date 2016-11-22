@@ -49,11 +49,11 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
     }
 
     $scope.setNavegacion = function(item, model, label, event){
-        $scope.nuevoPasavante.ID_TIPO_NAVEGACION = item.ID_TRAFICO;
+        $scope.nuevoPasavante.setTipoNavegacion(item.ID_TRAFICO);
     };
 
     $scope.setMuelle = function(item, model, label, event){
-        $scope.nuevoPasavante.TERMINALES[0].ID_TERMINAL = item.CODIGO_MUELLE;
+        $scope.nuevoPasavante.setMuelle(item.CODIGO_MUELLE);
     };
 
     $scope.setMinimo = function(index){
@@ -149,7 +149,7 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
         $scope.nuevoPasavante.saveChanges().then(function(result){
             if (result.status == 'OK'){
                 dialogsService.notify('Pasavantes', 'Todas las tarifas se guardaron correctamente');
-                $scope.limpiarFormulario();
+                //$scope.limpiarFormulario();
             } else {
                 dialogsService.notify('Pasavantes', 'Se produjeron errores en ' + result.data + 'tarifas.');
             }

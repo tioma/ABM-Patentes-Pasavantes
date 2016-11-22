@@ -24,8 +24,22 @@ administradorPasavantes.factory('Pasavante', ['$http', 'APP_CONFIG', '$q', 'Tari
 					this.TERMINALES[i].TARIFAS[j] = new Tarifa(this.TERMINALES[i].TARIFAS[j]);
 					this.VALOR_TOTAL += this.TERMINALES[i].TARIFAS[j].VALOR;
 				}
-
 			}
+		},
+		resetTarifasId: function(){
+			for (var i = 0; i < this.TERMINALES[0].TARIFAS.length; i++){
+				this.TERMINALES[0].TARIFAS[i].ID = undefined;
+			}
+		},
+		setTipoNavegacion: function(idTipoNavegacion){
+			this.ID_TIPO_NAVEGACION = idTipoNavegacion;
+
+			this.resetTarifasId();
+		},
+		setMuelle: function(idMuelle){
+			$scope.nuevoPasavante.TERMINALES[0].ID_TERMINAL = idMuelle;
+
+			this.resetTarifasId();
 		},
 		addRate: function(){
 			this.TERMINALES[0].TARIFAS.push(new Tarifa());

@@ -34,8 +34,7 @@ administradorPatentes.run(['$rootScope', '$state', '$window', function($rootScop
 	});
 
 	$rootScope.goBack = function(){
-		console.log('hola');
-		$window.history.back(-1);
+		$window.history.back();
 	}
 
 }]);
