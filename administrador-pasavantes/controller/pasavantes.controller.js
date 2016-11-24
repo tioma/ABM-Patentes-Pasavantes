@@ -4,7 +4,7 @@
 /**
  * Created by Artiom on 4/10/16.
  */
-administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Tarifa', 'pasavantesFactory', 'localStorageService', 'dialogsService', function($scope, Pasavante, Tarifa, pasavantesFactory, localStorageService, dialogsService){
+administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Tarifa', 'pasavantesFactory', 'localStorageService', 'dialogsService', '$timeout', function($scope, Pasavante, Tarifa, pasavantesFactory, localStorageService, dialogsService, $timeout){
 
     $scope.fecha = new Date();
 
@@ -62,8 +62,35 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
         $scope.nuevoPasavante.setTipoNavegacion(item.ID_TRAFICO);
     };
 
+    $scope.unsetNavegacion = function(){
+        $scope.nuevoPasavante.NAVEGACION = '';
+        $scope.nuevoPasavante.ID_TIPO_NAVEGACION = 0;
+        $scope.nuevoPasavante.resetTarifasId();
+    };
+
     $scope.setMuelle = function(item, model, label, event){
         $scope.nuevoPasavante.setMuelle(item.CODIGO_MUELLE);
+    };
+
+    $scope.unsetMuelle = function(){
+        $scope.nuevoPasavante.TERMINALES[0].MUELLE = '';
+        $scope.nuevoPasavante.TERMINALES[0].ID_TERMINAL = 0;
+        $scope.nuevoPasavante.resetTarifasId();
+    };
+
+    $scope.checkMuelle = function(){
+        $timeout(function(){
+            if ($scope.nuevoPasavante.TERMINALES[0].MUELLE == undefined){
+                $scope.unsetMuelle();
+            }
+        }, 1);
+
+    };
+
+    $scope.preventSubmit = function(event){
+        if (event.keyCode == 13){
+            event.preventDefault();
+        }
     };
 
     $scope.setMinimo = function(index){

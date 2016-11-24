@@ -7,6 +7,7 @@ administradorPasavantes.factory('Pasavante', ['$http', 'APP_CONFIG', '$q', 'Tari
 		if (pasavanteData){
 			this.setData(pasavanteData);
 		} else {
+			this.ID_TIPO_NAVEGACION = 0;
 			this.TERMINALES = [{
 				ID_TERMINAL: 0,
 				TARIFAS: []
