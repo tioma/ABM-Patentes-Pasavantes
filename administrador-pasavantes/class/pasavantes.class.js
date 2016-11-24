@@ -37,7 +37,7 @@ administradorPasavantes.factory('Pasavante', ['$http', 'APP_CONFIG', '$q', 'Tari
 			this.resetTarifasId();
 		},
 		setMuelle: function(idMuelle){
-			$scope.nuevoPasavante.TERMINALES[0].ID_TERMINAL = idMuelle;
+			this.TERMINALES[0].ID_TERMINAL = idMuelle;
 
 			this.resetTarifasId();
 		},

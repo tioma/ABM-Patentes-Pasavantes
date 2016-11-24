@@ -34,9 +34,19 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
             //console.log(pasavantes);
             $scope.pasavantes = pasavantes;
             $scope.pasavantes.forEach(function(pasavante){
-                pasavante.NAVEGACION = $scope.traficos[pasavante.ID_TIPO_NAVEGACION].DESC_TRAFICO;
+                if ($scope.traficos[pasavante.ID_TIPO_NAVEGACION]){
+                    pasavante.NAVEGACION = $scope.traficos[pasavante.ID_TIPO_NAVEGACION].DESC_TRAFICO;
+                } else {
+                    pasavante.NAVEGACION = 'Error - No se ha encontrado el tipo de navegación';
+                }
+
                 pasavante.TERMINALES.forEach(function(muelle){
-                    muelle.MUELLE = $scope.muelles[muelle.ID_TERMINAL].DESCRIPCION_MUELLE;
+                    if ($scope.muelles[muelle.ID_TERMINAL]){
+                        muelle.MUELLE = $scope.muelles[muelle.ID_TERMINAL].DESCRIPCION_MUELLE;
+                    } else {
+                        muelle.MUELLE = 'ERROR - MUELLE NO ENCONTRADO.'
+                    }
+
                     muelle.TARIFAS.forEach(function(tarifa){
                         tarifa.CODIGO_TARIFA = $scope.tarifas[tarifa.ID_TARIFA].CODIGO_TARIFA
                     })
