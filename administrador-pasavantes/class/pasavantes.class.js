@@ -17,12 +17,12 @@ administradorPasavantes.factory('Pasavante', ['$http', 'APP_CONFIG', '$q', 'Tari
 	Pasavante.prototype = {
 		setData: function(pasavanteData){
 			angular.extend(this, pasavanteData);
-			this.VALOR_TOTAL = 0;
 			this.DETALLE = false;
 			for (var i = 0; i < this.TERMINALES.length; i ++){
+				this.TERMINALES[i].VALOR_TOTAL = 0;
 				for (var j = 0; j < this.TERMINALES[i].TARIFAS.length; j++){
 					this.TERMINALES[i].TARIFAS[j] = new Tarifa(this.TERMINALES[i].TARIFAS[j]);
-					this.VALOR_TOTAL += this.TERMINALES[i].TARIFAS[j].VALOR;
+					this.TERMINALES[i].VALOR_TOTAL += this.TERMINALES[i].TARIFAS[j].VALOR;
 				}
 			}
 		},
