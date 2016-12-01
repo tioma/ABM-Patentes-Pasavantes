@@ -8,13 +8,13 @@ administradorPasavantes.factory('pasavantesFactory', ['$http', '$q', 'APP_CONFIG
 		trafico: localStorageService.get('trafico'),
 		tarifas: localStorageService.get('tarifas'),
 		getPasavantes: function(){
-			var deferred = $q.defer();
-			var url = APP_CONFIG.SERVER_URL + '/pasavantes';
+			const deferred = $q.defer();
+			const url = `${APP_CONFIG.SERVER_URL}/pasavantes`;
 			$http.get(url).then(function(response){
 				if (response.data.status == 'OK'){
-					var pasavantesArray = [];
-					response.data.data.forEach(function(pasavanteData){
-						var nuevoPasavante = new Pasavante(pasavanteData);
+					let pasavantesArray = [];
+					response.data.data.forEach(pasavanteData => {
+						let nuevoPasavante = new Pasavante(pasavanteData);
 						pasavantesArray.push(nuevoPasavante)
 					});
 					deferred.resolve(pasavantesArray);

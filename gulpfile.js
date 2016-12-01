@@ -7,6 +7,7 @@ var minify = require('gulp-minify');
 var htmlReplace = require('gulp-html-replace');
 var cleanCss = require('gulp-clean-css');
 var rename = require('gulp-rename');
+var babel = require('gulp-babel');
 
 gulp.task('clean-css', function(){
 
@@ -84,6 +85,9 @@ gulp.task("copy-bower-dependencies", function () {
 gulp.task('compress-pasavantes', function(){
     gulp.src(['administrador-pasavantes/*.js', 'administrador-pasavantes/**/*.js'])
         .pipe(concat('app.js'))
+        .pipe(babel({
+            presets: ['es2015']
+        }))
         .pipe(minify({ noSource: true }))
         .pipe(gulp.dest('build/administrador-pasavantes/'))
 });
@@ -91,6 +95,9 @@ gulp.task('compress-pasavantes', function(){
 gulp.task('compress-patentes', function(){
     gulp.src(['administrador-patentes/*.js', 'administrador-patentes/**/*.js'])
         .pipe(concat('app.js'))
+        .pipe(babel({
+            presets: ['es2015']
+        }))
         .pipe(minify({ noSource: true }))
         .pipe(gulp.dest('build/administrador-patentes'))
 });

@@ -59,23 +59,21 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
     }
 
     $scope.setNavegacion = function(item, model, label, event){
-        $scope.nuevoPasavante.setTipoNavegacion(item.ID_TRAFICO);
+        $scope.nuevoPasavante.tipoNavegacion = item.ID_TRAFICO;
     };
 
     $scope.unsetNavegacion = function(){
         $scope.nuevoPasavante.NAVEGACION = '';
-        $scope.nuevoPasavante.ID_TIPO_NAVEGACION = 0;
-        $scope.nuevoPasavante.resetTarifasId();
+        $scope.nuevoPasavante.tipoNavegacion = 0;
     };
 
     $scope.setMuelle = function(item, model, label, event){
-        $scope.nuevoPasavante.setMuelle(item.CODIGO_MUELLE);
+        $scope.nuevoPasavante.muelle = item.CODIGO_MUELLE;
     };
 
     $scope.unsetMuelle = function(){
         $scope.nuevoPasavante.TERMINALES[0].MUELLE = '';
-        $scope.nuevoPasavante.TERMINALES[0].ID_TERMINAL = 0;
-        $scope.nuevoPasavante.resetTarifasId();
+        $scope.nuevoPasavante.muelle = 0;
     };
 
     $scope.checkMuelle = function(){
@@ -100,22 +98,11 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
     };
 
     $scope.setTarifa = function(item, model, label, event, index){
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].ID_TARIFA = item.ID_TARIFA;
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].CODIGO_TARIFA = item.CODIGO_TARIFA;
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].DESCRI_TARIFA = item.DESCRI_TARIFA;
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].SIMBOLO = item.SIMBOLO;
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].CODIGO_AFIP = item.CODIGO_AFIP;
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].getValor();
+        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].data = item;
     };
 
     $scope.unsetTarifa = function(index){
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].BACKUP = '';
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].ID_TARIFA = '';
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].CODIGO_TARIFA = '';
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].DESCRI_TARIFA = '';
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].SIMBOLO = '';
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].CODIGO_AFIP = '';
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].VALOR = '';
+        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].unsetData();
     };
 
     $scope.setMinDate = function(tarifa){

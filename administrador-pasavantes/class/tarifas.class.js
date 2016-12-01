@@ -3,63 +3,86 @@
  */
 administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function($http, APP_CONFIG, $q){
 
-	function Tarifa(tarifaData){
-		this.MINIMO = false;
-		this.DESDE_OPENED = false;
-		this.HASTA_OPENED = false;
-		this.DESDE_OPTIONS = {};
-		this.HASTA_OPTIONS = {
-			minDate: new Date()
-		};
-		this.STATUS = '';
-		if (tarifaData) this.setData(tarifaData);
-	}
+	class Tarifa {
+		constructor(tarifaData){
+			this.MINIMO = false;
+			this.DESDE_OPENED = false;
+			this.HASTA_OPENED = false;
+			this.DESDE_OPTIONS = {};
+			this.HASTA_OPTIONS = {
+				minDate: new Date()
+			};
+			this.STATUS = '';
+			if (tarifaData)
+				this.setData(tarifaData);
+		}
 
-	Tarifa.prototype = {
-		setData: function(tarifaData){
+		setData(tarifaData){
 			angular.extend(this, tarifaData);
+			if (this.DESCRIPCION) {
+				this.DESCRI_TARIFA = this.DESCRIPCION;
+			}
 			this.MINIMO = (this.MINIMO == 1);
 			if (this.FECHA_FIN != null) this.FECHA_FIN = new Date(this.FECHA_FIN);
 			if (this.FECHA_INICIO != null) this.FECHA_INICIO = new Date(this.FECHA_INICIO);
-		},
-		getValor: function(){
-			var deferred = $q.defer();
-			var url = APP_CONFIG.SERVER_URL + '/rates/' + this.ID_TARIFA;
-			var tarifa = this;
-			$http.get(url).then(function(response){
+		}
+
+		getValor(){
+			const deferred = $q.defer();
+			const url = `${APP_CONFIG.SERVER_URL}/rates/${this.ID_TARIFA}`;
+			$http.get(url).then(response => {
 				if (response.data.data[0].VALORES.length == 0){
-					tarifa.VALOR = 0;
+					this.VALOR = 0;
 				} else {
-					tarifa.VALOR = response.data.data[0].VALORES[0].VALOR_TARIFA;
+					this.VALOR = response.data.data[0].VALORES[0].VALOR_TARIFA;
 				}
 				deferred.resolve();
-			}, function(response){
+			}, response => {
 				deferred.reject(response.data)
 			});
 			return deferred.promise;
-		},
-		formatData: function(){
-			return this.CODIGO_TARIFA + ' - ' + this.DESCRI_TARIFA;
-		},
-		disable: function(){
-			var deferred = $q.defer();
-			var url = APP_CONFIG.SERVER_URL + '/pasavantes/pasavante/disable/' + this.ID;
-			var tarifa = this;
-			$http.put(url).then(function(response){
+		}
+
+		disable(){
+			const deferred = $q.defer();
+			const url = `${APP_CONFIG.SERVER_URL}/pasavantes/pasavante/disable/${this.ID}`;
+			$http.put(url).then(response => {
 				//console.log(response);
 				if (response.data.status == 'OK'){
-					tarifa.FECHA_FIN = new Date();
+					this.FECHA_FIN = new Date();
 					deferred.resolve(response.data);
 				} else {
 					deferred.reject(response.data);
 				}
-			}, function(response){
+			}, response => {
 				deferred.reject(response.data)
 			});
 			return deferred.promise;
-		},
-		buildAdapterObject: function(navegacion, muelle){
-			var adapterObject = {};
+		}
+
+		enable(){
+			const deferred = $q.defer();
+			const url = `${APP_CONFIG.SERVER_URL}/pasavantes/pasavante/update/${this.ID}`;
+			let adapterObject = {};
+			adapterObject.id_tipo_navegacion = parseInt(navegacion);
+			adapterObject.id_terminal = parseInt(muelle);
+			if (this.FECHA_INICIO) adapterObject.fecha_inicio = this.FECHA_INICIO;
+			if (this.MINIMO) adapterObject.minimo = 1;
+			$http.put(url, adapterObject).then(response => {
+				if (response.data.status == 'OK'){
+					this.FECHA_FIN = null;
+					deferred.resolve(response.data);
+				} else {
+					deferred.reject(response.data);
+				}
+			}, response => {
+				deferred.reject(response.data);
+			});
+			return deferred.promise;
+		}
+
+		buildAdapterObject(navegacion, muelle){
+			let adapterObject = {};
 			adapterObject.id_tipo_navegacion = parseInt(navegacion);
 			adapterObject.id_terminal = parseInt(muelle);
 			adapterObject.id_tarifa = this.ID_TARIFA;
@@ -67,77 +90,82 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function
 			if (this.FECHA_FIN) adapterObject.fecha_fin = this.FECHA_FIN;
 			if (this.MINIMO) adapterObject.minimo = 1;
 			return adapterObject;
-		},
-		enable: function(navegacion, muelle){
-			var deferred = $q.defer();
-			var url = APP_CONFIG.SERVER_URL + '/pasavantes/pasavante/update/' + this.ID;
-			var adapterObject = {};
-			adapterObject.id_tipo_navegacion = parseInt(navegacion);
-			adapterObject.id_terminal = parseInt(muelle);
-			if (this.FECHA_INICIO) adapterObject.fecha_inicio = this.FECHA_INICIO;
-			if (this.MINIMO) adapterObject.minimo = 1;
-			var tarifa = this;
-			$http.put(url, adapterObject).then(function(response){
-				if (response.data.status == 'OK'){
-					tarifa.FECHA_FIN = null;
-					deferred.resolve(response.data);
-				} else {
-					deferred.reject(response.data);
-				}
-			}, function(response){
-				deferred.reject(response.data);
-			});
-			return deferred.promise;
-		},
-		savePasavante: function(navegacion, muelle){
-			var deferred = $q.defer();
-			var tarifa = this;
-			var adapterObject = this.buildAdapterObject(navegacion, muelle);
+		}
+
+		savePasavante(navegacion, muelle){
+			const deferred = $q.defer();
+			let adapterObject = this.buildAdapterObject(navegacion, muelle);
 			if (this.ID){
 				//console.log('se updatea');
-				this.updateRate(adapterObject).then(function(response){
+				this.updateRate(adapterObject).then(response => {
 					if (response.data.status == 'OK'){
-						tarifa.STATUS = 'OK';
+						this.STATUS = 'OK';
 						deferred.resolve(true);
 					} else {
-						tarifa.STATUS = 'ERROR';
+						this.STATUS = 'ERROR';
 						deferred.resolve(false);
 					}
-				}, function(response){
+				}, response => {
 					//console.log(response);
-					tarifa.STATUS = 'ERROR';
-					tarifa.ERROR = response.data.message;
+					this.STATUS = 'ERROR';
+					this.ERROR = response.data.message;
 					deferred.resolve(false);
 				})
 			} else {
 				//console.log('esta se agrega');
-				this.addRate(adapterObject).then(function(response){
+				this.addRate(adapterObject).then(response => {
 					if (response.data.status == 'OK'){
-						tarifa.STATUS = 'OK';
-						tarifa.ID = response.data.data.ID;
+						this.STATUS = 'OK';
+						this.ID = response.data.data.ID;
 						deferred.resolve(true);
 					} else {
-						tarifa.STATUS = 'ERROR';
+						this.STATUS = 'ERROR';
 						deferred.resolve(false);
 					}
-				}, function(response){
-					tarifa.STATUS = 'ERROR';
+				}, response => {
+					this.STATUS = 'ERROR';
 					//console.log(response);
-					tarifa.ERROR = response.data.message;
+					this.ERROR = response.data.message;
 					deferred.resolve(false)
 				});
 			}
 			return deferred.promise;
-		},
-		addRate: function(adapterObject){
-			var url = APP_CONFIG.SERVER_URL + '/pasavantes/pasavante';
+		}
+
+		addRate(adapterObject){
+			var url = `${APP_CONFIG.SERVER_URL}/pasavantes/pasavante`;
 			return $http.post(url, adapterObject);
-		},
-		updateRate: function(adapterObject){
-			var url = APP_CONFIG.SERVER_URL + '/pasavantes/pasavante/update/' + this.ID;
+		}
+
+		updateRate(adapterObject){
+			var url = `${APP_CONFIG.SERVER_URL}/pasavantes/pasavante/update/${this.ID}`;
 			return $http.put(url, adapterObject);
 		}
-	};
+
+		unsetData(){
+			this.BACKUP = '';
+			this.ID_TARIFA = '';
+			this.CODIGO_TARIFA = '';
+			this.DESCRI_TARIFA = '';
+			this.SIMBOLO = '';
+			this.CODIGO_AFIP = '';
+			this.VALOR = '';
+			this.ID = undefined;
+		}
+
+		set data(tarifaData){
+			this.ID_TARIFA = tarifaData.ID_TARIFA;
+			this.CODIGO_TARIFA = tarifaData.CODIGO_TARIFA;
+			this.DESCRI_TARIFA = tarifaData.DESCRI_TARIFA;
+			this.SIMBOLO = tarifaData.SIMBOLO;
+			this.CODIGO_AFIP = tarifaData.CODIGO_AFIP;
+			this.getValor();
+		}
+
+		get fullDescription(){
+			return `${this.CODIGO_TARIFA} - ${this.DESCRI_TARIFA}`;
+		}
+	}
 
 	return Tarifa;
 

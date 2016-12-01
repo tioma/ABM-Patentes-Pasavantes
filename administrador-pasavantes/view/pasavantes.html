@@ -38,7 +38,7 @@
                                 <td class="col-lg-1 text-center"><input type="checkbox" ng-model="tarifa.MINIMO" ng-change="setMinimo($index)" class="radio text-center"></td>
                                 <td class="col-lg-4">
                                     <div class="input-group">
-                                        <input type="text" ng-model="tarifa.BACKUP" uib-typeahead="tarifa as tarifa.formatData() for tarifa in tarifas | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Seleccione una tarifa" typeahead-on-select="setTarifa($item, $model, $label, $event, $index)" ng-required="true" autocomplete="off" ng-keypress="preventSubmit($event)">
+                                        <input type="text" ng-model="tarifa.BACKUP" uib-typeahead="tarifa as tarifa.fullDescription for tarifa in tarifas | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Seleccione una tarifa" typeahead-on-select="setTarifa($item, $model, $label, $event, $index)" ng-required="true" autocomplete="off" ng-keypress="preventSubmit($event)">
                                         <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="unsetTarifa($index)"><i class="glyphicon glyphicon-remove"></i></button></span>
                                     </div>
                                 </td>
@@ -119,7 +119,7 @@
                     <td></td>
                     <td></td>
                     <td><span ng-show="tarifa.MINIMO">Mínimo a facturar <i class="glyphicon glyphicon-arrow-right"></i></span></td>
-                    <td ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.CODIGO_TARIFA + ' - ' + tarifa.DESCRIPCION }}</td>
+                    <td ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.fullDescription }}</td>
                     <td class="text-center"><span ng-show="tarifa.FECHA_FIN != null" ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.FECHA_FIN | date: 'yyyy-MM-dd' }}</span></td>
                     <td class="text-right">{{ tarifa.VALOR | currency: '$' : 2 }}</td>
                     <td class="text-center">
