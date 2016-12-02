@@ -7,7 +7,7 @@
                     <div class="input-group">
                         <label for="tipoEmbarcacionSelect" class="input-group-addon"><strong>Arboladura</strong></label>
                         <input id="tipoEmbarcacionSelect" type="text" ng-model="nuevaPatente.ARBOLADURA" uib-typeahead="embarcacion as embarcacion.ARBOLADURA for embarcacion in embarcaciones | filter:$viewValue | limitTo:10" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Ingresar arboladura" typeahead-on-select="setArboladura($item, $model, $label, $event)" ng-required="true" autocomplete="off">
-                        <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="nuevaPatente.ARBOLADURA = ''; nuevaPatente.ID_TIPO_EMBARCACION = 0"><i class="glyphicon glyphicon-remove"></i></button></span>
+                        <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="unsetArboladura()"><i class="glyphicon glyphicon-remove"></i></button></span>
                     </div>
                 </div>
             </div>
@@ -31,7 +31,7 @@
                                 <td class="col-lg-1 text-center"><input type="checkbox" ng-model="tarifa.MINIMO" ng-change="setMinimo($index)" class="radio text-center"></td>
                                 <td class="col-lg-4">
                                     <div class="input-group">
-                                        <input type="text" ng-model="tarifa.BACKUP" uib-typeahead="tarifa as tarifa.formatData() for tarifa in tarifas | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Seleccione una tarifa" typeahead-on-select="setTarifa($item, $model, $label, $event, $index)" ng-required="true" autocomplete="off">
+                                        <input type="text" ng-model="tarifa.BACKUP" uib-typeahead="tarifa as tarifa.fullDescription for tarifa in tarifas | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Seleccione una tarifa" typeahead-on-select="setTarifa($item, $model, $label, $event, $index)" ng-required="true" autocomplete="off">
                                         <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="unsetTarifa($index)"><i class="glyphicon glyphicon-remove"></i></button></span>
                                     </div>
                                 </td>
@@ -67,7 +67,7 @@
             </div>
             <div class="form-group col-lg-12">
                 <div class="input-group col-lg-1 pull-right">
-                    <button id="guardarPatente" type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-save"></i> Guardar</button>
+                    <button id="guardarPatente" type="submit" class="btn btn-primary" ng-disabled="nuevaPatente.arboladura == 0"><i class="glyphicon glyphicon-save"></i> Guardar</button>
                 </div>
                 <div class="input-group col-lg-1 pull-right">
                     <button id="cancelarCambios" type="button" class="btn btn-default" ng-click="limpiarFormulario()"><i class="glyphicon glyphicon-remove"></i> Cancelar</button>
@@ -109,12 +109,12 @@
                 <tr ng-show="patente.DETALLE" ng-repeat="tarifa in patente.TARIFAS">
                     <td></td>
                     <td><span ng-show="tarifa.MINIMO">Mínimo a facturar <i class="glyphicon glyphicon-arrow-right"></i></span></td>
-                    <td ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.CODIGO_TARIFA + ' - ' + tarifa.DESCRIPCION }}</td>
+                    <td ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.fullDescription }}</td>
                     <td class="text-center"><span ng-show="tarifa.FECHA_FIN != null" ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.FECHA_FIN | date: 'yyyy-MM-dd' }}</span></td>
                     <td class="text-right">{{ tarifa.VALOR | currency: '$' : 2 }}</td>
                     <td class="text-center">
                         <button ng-hide="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-danger" ng-click="disableRate(tarifa)" title="Dar de baja"><i class="glyphicon glyphicon-remove"></i></button>
-                        <button ng-show="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-primary" ng-click="enableRate(patente.ID_TIPO_EMBARCACION, tarifa)" title="Habilitar tarifa"><i class="glyphicon glyphicon-check"></i></button>
+                        <button ng-show="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-primary" ng-click="enableRate(patente.arboladura, tarifa)" title="Habilitar tarifa"><i class="glyphicon glyphicon-check"></i></button>
                     </td>
                     <td></td>
                 </tr>

@@ -3,16 +3,14 @@
  */
 administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa', function($http, APP_CONFIG, $q, Tarifa){
 
-	function Patente(patenteData){
-		if (patenteData){
-			this.setData(patenteData);
-		} else {
+	class Patente {
+		constructor(patenteData){
 			this.TARIFAS = [];
+			if (patenteData)
+				this.setData(patenteData);
 		}
-	}
 
-	Patente.prototype = {
-		setData: function(patenteData){
+		setData(patenteData){
 			angular.extend(this, patenteData);
 			this.VALOR_TOTAL = 0;
 			this.DETALLE = false;
@@ -20,32 +18,27 @@ administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa',
 				this.TARIFAS[i] = new Tarifa(this.TARIFAS[i]);
 				this.VALOR_TOTAL += this.TARIFAS[i].VALOR;
 			}
-		},
-		setArboladura: function(idArboladura){
-			this.ID_TIPO_EMBARCACION = idArboladura;
+		}
 
-			for (var i = 0; i < this.TARIFAS.length; i++){
-				this.TARIFAS[i].ID = undefined;
-			}
-		},
-		addRate: function(){
+		addRate(){
 			this.TARIFAS.push(new Tarifa());
-		},
-		removeRate: function(index){
+		}
+
+		removeRate(index){
 			this.TARIFAS.splice(index, 1);
-		},
-		saveChanges: function(){
-			var deferred = $q.defer();
-			var patente = this;
+		}
+
+		saveChanges(){
+			const deferred = $q.defer();
 			if (this.TARIFAS.length > 0){
 				var ajaxCalls = [];
-				for (var i = 0; i < this.TARIFAS.length; i++){
-					ajaxCalls.push(this.TARIFAS[i].savePatente(this.ID_TIPO_EMBARCACION));
+				for (let tarifa of this.TARIFAS){
+					ajaxCalls.push(tarifa.savePatente(this.ID_TIPO_EMBARCACION));
 				}
-				$q.all(ajaxCalls).then(function(responses){
-					var success = 0;
-					var result = {};
-					responses.forEach(function(response){
+				$q.all(ajaxCalls).then(responses => {
+					let success = 0;
+					let result = {};
+					responses.forEach(response => {
 						if (response) success++;
 					});
 					if (success == 0){
@@ -55,7 +48,7 @@ administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa',
 						};
 						deferred.reject(result)
 					}
-					if (success == patente.TARIFAS.length){
+					if (success == this.TARIFAS.length){
 						//Todas se guardaron correctamente
 						result = {
 							status: 'OK'
@@ -65,13 +58,13 @@ administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa',
 						//Algunas tuvieron error
 						result = {
 							status: 'ERROR',
-							data: patente.TARIFAS.length - success
+							data: this.TARIFAS.length - success
 						};
 						deferred.resolve(result);
 					}
 				});
 			} else {
-				var response = {
+				const response = {
 					status: 'NORATES',
 					message: 'Debe seleccionar una tarifa para guardar.'
 				};
@@ -79,7 +72,19 @@ administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa',
 			}
 			return deferred.promise;
 		}
-	};
+
+		set arboladura(idArboladura){
+			this.ID_TIPO_EMBARCACION = idArboladura;
+
+			for (var i = 0; i < this.TARIFAS.length; i++){
+				this.TARIFAS[i].ID = undefined;
+			}
+		}
+
+		get arboladura(){
+			return this.ID_TIPO_EMBARCACION;
+		}
+	}
 
 	return Patente;
 }]);
