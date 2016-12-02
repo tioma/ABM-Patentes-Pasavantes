@@ -5,6 +5,7 @@ administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa',
 
 	class Patente {
 		constructor(patenteData){
+			this.ID_TIPO_EMBARCACION = 0;
 			this.TARIFAS = [];
 			if (patenteData)
 				this.setData(patenteData);
