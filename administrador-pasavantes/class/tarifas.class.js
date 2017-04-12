@@ -6,6 +6,8 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function
 	class Tarifa {
 		constructor(tarifaData){
 			this.MINIMO = false;
+			this.VALOR_MINIMO = 1;
+			this.CONTROL_MIN = true;
 			this.DESDE_OPENED = false;
 			this.HASTA_OPENED = false;
 			this.DESDE_OPTIONS = {};
@@ -22,7 +24,13 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function
 			if (this.DESCRIPCION) {
 				this.DESCRI_TARIFA = this.DESCRIPCION;
 			}
-			this.MINIMO = (this.MINIMO == 1);
+			if (this.CONTROL_MIN){
+				if (this.MINIMO){
+					this.VALOR_MINIMO = this.MINIMO;
+					this.MINIMO = true;
+				}
+				this.CONTROL_MIN = false;
+			}
 			if (this.FECHA_FIN != null) this.FECHA_FIN = new Date(this.FECHA_FIN);
 			if (this.FECHA_INICIO != null) this.FECHA_INICIO = new Date(this.FECHA_INICIO);
 		}
@@ -88,7 +96,11 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function
 			adapterObject.id_tarifa = this.ID_TARIFA;
 			if (this.FECHA_INICIO) adapterObject.fecha_inicio = this.FECHA_INICIO;
 			if (this.FECHA_FIN) adapterObject.fecha_fin = this.FECHA_FIN;
-			if (this.MINIMO) adapterObject.minimo = 1;
+			if (this.MINIMO){
+				adapterObject.minimo = this.VALOR_MINIMO;
+			} else {
+				adapterObject.minimo = 0;
+			}
 			return adapterObject;
 		}
 
@@ -151,6 +163,14 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function
 			this.CODIGO_AFIP = '';
 			this.VALOR = '';
 			this.ID = undefined;
+		}
+
+		get VALOR_TARIFA() {
+			if (this.MINIMO){
+				return this.VALOR_MINIMO;
+			} else {
+				return this.VALOR;
+			}
 		}
 
 		set data(tarifaData){

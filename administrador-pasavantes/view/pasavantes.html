@@ -54,7 +54,8 @@
                                         <input type="text" class="form-control datepicker" ng-change="setMaxDate(tarifa)" uib-datepicker-popup="yyyy-MM-dd" datepicker-options="tarifa.HASTA_OPTIONS" is-open="tarifa.HASTA_OPENED" ng-model="tarifa.FECHA_FIN" placeholder="aaaa-mm-dd" readonly style="background-color: white" close-text="Cerrar" clear-text="Borrar" current-text="Hoy">
                                     </div>
                                 </td>
-                                <td class="col-lg-2 text-right" style="font-size: large">{{ tarifa.VALOR | currency: tarifa.SIMBOLO : 2 }}</td>
+                                <td ng-if="!tarifa.MINIMO" class="col-lg-2 text-right" style="font-size: large">{{ tarifa.VALOR | currency: tarifa.SIMBOLO : 2 }}</td>
+                                <td ng-if="tarifa.MINIMO" class="col-lg-2 text-right" style="font-size: large"><input class="form-control text-right" type="number" step=".01" min="1" ng-model="tarifa.VALOR_MINIMO"></td>
                                 <td class="col-lg-1 text-center"><button ng-click="nuevoPasavante.removeRate($index)" type="button" class="btn btn-danger" title="Eliminar tarifa"><i class="glyphicon glyphicon-remove"></i></button> </td>
                             </tr>
                             </tbody>
@@ -121,7 +122,7 @@
                     <td><span ng-show="tarifa.MINIMO">Mínimo a facturar <i class="glyphicon glyphicon-arrow-right"></i></span></td>
                     <td ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.fullDescription }}</td>
                     <td class="text-center"><span ng-show="tarifa.FECHA_FIN != null" ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.FECHA_FIN | date: 'yyyy-MM-dd' }}</span></td>
-                    <td class="text-right">{{ tarifa.VALOR | currency: '$' : 2 }}</td>
+                    <td class="text-right">{{ tarifa.VALOR_TARIFA | currency: '$' : 2 }}</td>
                     <td class="text-center">
                         <button ng-hide="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-danger" ng-click="disableRate(tarifa)" title="Dar de baja"><i class="glyphicon glyphicon-remove"></i></button>
                         <button ng-show="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-primary" ng-click="enableRate(pasavante.ID_TIPO_NAVEGACION, terminal.ID_TERMINAL, tarifa)" title="Habilitar tarifa"><i class="glyphicon glyphicon-check"></i></button>

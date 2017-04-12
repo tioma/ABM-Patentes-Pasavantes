@@ -17,7 +17,7 @@ administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa',
 			this.DETALLE = false;
 			for (var i = 0; i < this.TARIFAS.length; i++){
 				this.TARIFAS[i] = new Tarifa(this.TARIFAS[i]);
-				this.VALOR_TOTAL += this.TARIFAS[i].VALOR;
+				this.VALOR_TOTAL += this.TARIFAS[i].VALOR_TARIFA;
 			}
 		}
 

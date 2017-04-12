@@ -24,7 +24,7 @@ administradorPasavantes.factory('Pasavante', ['$http', 'APP_CONFIG', '$q', 'Tari
 				terminal.VALOR_TOTAL = 0;
 				for (let tarifa of terminal.TARIFAS){
 					tarifa = new Tarifa(tarifa);
-					terminal.VALOR_TOTAL += tarifa.VALOR;
+					terminal.VALOR_TOTAL += tarifa.VALOR_TARIFA;
 					terminal.TARIFAS[j] = tarifa;
 					j++
 				}
