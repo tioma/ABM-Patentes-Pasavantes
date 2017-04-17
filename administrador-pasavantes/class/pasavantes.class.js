@@ -10,6 +10,7 @@ administradorPasavantes.factory('Pasavante', ['$http', 'APP_CONFIG', '$q', 'Tari
 				ID_TERMINAL: 0,
 				TARIFAS: []
 			}];
+			this.VALOR_MINIMO = 0;
 
 			if (pasavanteData)
 				this.setData(pasavanteData);
@@ -24,7 +25,11 @@ administradorPasavantes.factory('Pasavante', ['$http', 'APP_CONFIG', '$q', 'Tari
 				terminal.VALOR_TOTAL = 0;
 				for (let tarifa of terminal.TARIFAS){
 					tarifa = new Tarifa(tarifa);
-					terminal.VALOR_TOTAL += tarifa.VALOR_TARIFA;
+					if (tarifa.MINIMO){
+						terminal.VALOR_MINIMO = tarifa.VALOR_TARIFA;
+					} else {
+						terminal.VALOR_TOTAL += tarifa.VALOR_TARIFA;
+					}
 					terminal.TARIFAS[j] = tarifa;
 					j++
 				}
@@ -42,7 +47,13 @@ administradorPasavantes.factory('Pasavante', ['$http', 'APP_CONFIG', '$q', 'Tari
 		}
 
 		removeRate(index){
-			this.TERMINALES[0].TARIFAS.splice(index, 1);
+			if (this.TERMINALES[0].TARIFAS[index].ID){
+				this.TERMINALES[0].TARIFAS[index].FECHA_FIN = new Date();
+				this.TERMINALES[0].TARIFAS[index].FECHA_FIN.setHours(0, 0);
+				this.TERMINALES[0].TARIFAS[index].MINIMO = false;
+			} else {
+				this.TERMINALES[0].TARIFAS.splice(index, 1);
+			}
 		}
 
 		saveChanges(){

@@ -28,7 +28,10 @@
                             </thead>
                             <tbody>
                             <tr ng-repeat="tarifa in nuevaPatente.TARIFAS track by $index" uib-popover="{{ nuevaPatente.TARIFAS[$index].ERROR }}" popover-trigger="'mouseenter'" ng-class="nuevaPatente.TARIFAS[$index].STATUS == 'ERROR' ? 'error-tarifa' : ''">
-                                <td class="col-lg-1 text-center"><input type="checkbox" ng-model="tarifa.MINIMO" ng-change="setMinimo($index)" class="radio text-center"></td>
+                                <td class="col-lg-1 text-center">
+                                    <input ng-show="!tarifa.FECHA_FIN || tarifa.FECHA_FIN > fecha" type="checkbox" ng-model="tarifa.MINIMO" ng-change="setMinimo($index)" class="radio text-center">
+                                    <span ng-show="tarifa.FECHA_FIN && tarifa.FECHA_FIN <= fecha" class="text-danger">Dada de baja</span>
+                                </td>
                                 <td class="col-lg-4">
                                     <div class="input-group">
                                         <input type="text" ng-model="tarifa.BACKUP" uib-typeahead="tarifa as tarifa.fullDescription for tarifa in tarifas | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Seleccione una tarifa" typeahead-on-select="setTarifa($item, $model, $label, $event, $index)" ng-required="true" autocomplete="off">
@@ -94,17 +97,19 @@
                     <td class="text-center"><strong>Fecha de baja</strong></td>
                     <td class="text-right"><strong>Valor tarifa</strong></td>
                     <td class="text-center"><strong>Modificar</strong></td>
+                    <td class="text-right"><strong>Mínimo</strong></td>
                     <td class="text-right"><strong>Total</strong></td>
                 </tr>
                 </thead>
-                <tbody ng-repeat="patente in patentes | filter: searchText">
+                <tbody ng-repeat="patente in patentes | filter: searchText | orderBy: 'ARBOLADURA'">
                 <tr ng-click="patente.DETALLE = !patente.DETALLE" class="clickeable-row" ng-class="patente.DETALLE ? 'selected-row' : ''">
                     <td class="col-lg-1"><button type="button" ng-click="editarPatente(patente, $event)" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i></button></td>
                     <td class="col-lg-2"><strong>{{ patente.ARBOLADURA }}</strong></td>
-                    <td class="col-lg-3"></td>
+                    <td class="col-lg-2"></td>
                     <td class="col-lg-1"></td>
                     <td class="col-lg-1"></td>
                     <td class="col-lg-1"></td>
+                    <td class="col-lg-1 text-right"><strong ng-show="patente.VALOR_MINIMO">{{ patente.VALOR_MINIMO | currency: '$' : 2 }}</strong></td>
                     <td class="col-lg-1 text-right"><strong>{{ patente.VALOR_TOTAL | currency: '$' : 2 }}</strong></td>
                 </tr>
                 <tr ng-show="patente.DETALLE" ng-repeat="tarifa in patente.TARIFAS">
@@ -117,6 +122,7 @@
                         <button ng-hide="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-danger" ng-click="disableRate(tarifa)" title="Dar de baja"><i class="glyphicon glyphicon-remove"></i></button>
                         <button ng-show="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-primary" ng-click="enableRate(patente.arboladura, tarifa)" title="Habilitar tarifa"><i class="glyphicon glyphicon-check"></i></button>
                     </td>
+                    <td></td>
                     <td></td>
                 </tr>
                 </tbody>

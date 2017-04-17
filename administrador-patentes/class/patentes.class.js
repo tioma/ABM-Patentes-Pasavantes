@@ -7,6 +7,7 @@ administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa',
 		constructor(patenteData){
 			this.ID_TIPO_EMBARCACION = 0;
 			this.TARIFAS = [];
+			this.VALOR_MINIMO = 0;
 			if (patenteData)
 				this.setData(patenteData);
 		}
@@ -15,9 +16,16 @@ administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa',
 			angular.extend(this, patenteData);
 			this.VALOR_TOTAL = 0;
 			this.DETALLE = false;
-			for (var i = 0; i < this.TARIFAS.length; i++){
-				this.TARIFAS[i] = new Tarifa(this.TARIFAS[i]);
-				this.VALOR_TOTAL += this.TARIFAS[i].VALOR_TARIFA;
+			let i = 0;
+			for (let tarifa of this.TARIFAS){
+				tarifa = new Tarifa(tarifa);
+				if (tarifa.MINIMO){
+					this.VALOR_MINIMO = tarifa.VALOR_TARIFA;
+				} else {
+					this.VALOR_TOTAL += tarifa.VALOR_TARIFA;
+				}
+				this.TARIFAS[i] = tarifa;
+				i++
 			}
 		}
 
@@ -26,13 +34,19 @@ administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa',
 		}
 
 		removeRate(index){
-			this.TARIFAS.splice(index, 1);
+			if (this.TARIFAS[index].ID){
+				this.TARIFAS[index].FECHA_FIN = new Date();
+				this.TARIFAS[index].FECHA_FIN.setHours(0, 0);
+				this.TARIFAS[index].MINIMO = false;
+			} else {
+				this.TARIFAS.splice(index, 1);
+			}
 		}
 
 		saveChanges(){
 			const deferred = $q.defer();
 			if (this.TARIFAS.length > 0){
-				var ajaxCalls = [];
+				let ajaxCalls = [];
 				for (let tarifa of this.TARIFAS){
 					ajaxCalls.push(tarifa.savePatente(this.ID_TIPO_EMBARCACION));
 				}
@@ -77,8 +91,8 @@ administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa',
 		set arboladura(idArboladura){
 			this.ID_TIPO_EMBARCACION = idArboladura;
 
-			for (var i = 0; i < this.TARIFAS.length; i++){
-				this.TARIFAS[i].ID = undefined;
+			for (let tarifa of this.TARIFAS){
+				tarifa.ID = undefined;
 			}
 		}
 
