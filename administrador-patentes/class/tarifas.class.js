@@ -59,6 +59,7 @@ administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function($
 				//console.log(response);
 				if (response.data.status == 'OK'){
 					this.FECHA_FIN = new Date();
+					this.MINIMO = false;
 					deferred.resolve(response.data);
 				} else {
 					deferred.reject(response.data);

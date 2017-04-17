@@ -7,6 +7,7 @@
 administradorPatentes.controller('patentesCtrl', ['$scope', 'Patente', 'Tarifa', 'patentesFactory', 'localStorageService', 'dialogsService', function($scope, Patente, Tarifa, patentesFactory, localStorageService, dialogsService){
 
     $scope.fecha = new Date();
+    $scope.fecha.setHours(23, 59, 59);
 
     $scope.nuevaPatente = new Patente();
 
@@ -85,16 +86,11 @@ administradorPatentes.controller('patentesCtrl', ['$scope', 'Patente', 'Tarifa',
         }
     };
 
-    $scope.disableRate = function(tarifa){
-        var confirm = dialogsService.confirm('Dar de baja tarifa', 'Se dará de baja la tarifa seleccionada. ¿Confirma la operación?');
-        confirm.result.then(function(){
-            tarifa.disable().then(function(data){
-                //console.log(data);
-                $scope.fecha = new Date();
-            }, function(error){
-                //console.log(error);
-                dialogsService.error('Error', error.message);
-            });
+    $scope.disableRate = function(patente, tarifa){
+        patente.removeRate(tarifa).then(() => {
+            cargarPatentes();
+        }).catch((error) => {
+            dialogsService.error('Error', error.message);
         })
     };
 

@@ -1,7 +1,7 @@
 /**
  * Created by Artiom on 4/10/16.
  */
-administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa', function($http, APP_CONFIG, $q, Tarifa){
+administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa', 'dialogsService', function($http, APP_CONFIG, $q, Tarifa, dialogsService){
 
 	class Patente {
 		constructor(patenteData){
@@ -34,13 +34,24 @@ administradorPatentes.factory('Patente', ['$http', 'APP_CONFIG', '$q', 'Tarifa',
 		}
 
 		removeRate(index){
-			if (this.TARIFAS[index].ID){
-				this.TARIFAS[index].FECHA_FIN = new Date();
-				this.TARIFAS[index].FECHA_FIN.setHours(0, 0);
-				this.TARIFAS[index].MINIMO = false;
-			} else {
-				this.TARIFAS.splice(index, 1);
-			}
+			const deferred = $q.defer();
+			const confirm = dialogsService.confirm('Dar de baja tarifa', 'Se dará de baja la tarifa seleccionada. ¿Confirma la operación?');
+			confirm.result.then(() =>{
+				if (this.TARIFAS[index].ID){
+					this.TARIFAS[index].disable().then((data) => {
+						//console.log(data);
+						this.TARIFAS.splice(index, 1);
+						deferred.resolve();
+					}).catch((error) => {
+						deferred.reject(error)
+					})
+				} else {
+					this.TARIFAS.splice(index, 1);
+					deferred.resolve();
+				}
+			});
+			return deferred.promise;
+
 		}
 
 		saveChanges(){

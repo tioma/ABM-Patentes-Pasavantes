@@ -7,6 +7,7 @@
 administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Tarifa', 'pasavantesFactory', 'localStorageService', 'dialogsService', '$timeout', function($scope, Pasavante, Tarifa, pasavantesFactory, localStorageService, dialogsService, $timeout){
 
     $scope.fecha = new Date();
+    $scope.fecha.setHours(23, 59, 59);
 
     $scope.nuevoPasavante = new Pasavante();
 
@@ -127,17 +128,13 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
         }
     };
 
-    $scope.disableRate = function(tarifa){
-        var confirm = dialogsService.confirm('Dar de baja tarifa', 'Se dará de baja la tarifa seleccionada. ¿Confirma la operación?');
-        confirm.result.then(function(){
-            tarifa.disable().then(function(data){
-                //console.log(data);
-                $scope.fecha = new Date();
-            }, function(error){
-                //console.log(error);
-                dialogsService.error('Error', error.message);
-            });
-        })
+    $scope.disableRate = function(pasavante, terminal, tarifa){
+        pasavante.removeRate(terminal, tarifa).then((data) => {
+            cargarPasavantes();
+        }).catch((error) => {
+            //console.log(error);
+			dialogsService.error('Error', error.message);
+        });
     };
 
     $scope.enableRate = function(navegacion, muelle, tarifa){

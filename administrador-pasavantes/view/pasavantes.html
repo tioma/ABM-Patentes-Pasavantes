@@ -59,7 +59,7 @@
                                 </td>
                                 <td ng-if="!tarifa.MINIMO" class="col-lg-2 text-right" style="font-size: large">{{ tarifa.VALOR | currency: tarifa.SIMBOLO : 2 }}</td>
                                 <td ng-if="tarifa.MINIMO" class="col-lg-2 text-right" style="font-size: large"><input class="form-control text-right" type="number" step=".01" min="1" ng-model="tarifa.VALOR_MINIMO"></td>
-                                <td class="col-lg-1 text-center"><button ng-click="nuevoPasavante.removeRate($index)" type="button" class="btn btn-danger" title="Eliminar tarifa"><i class="glyphicon glyphicon-remove"></i></button> </td>
+                                <td class="col-lg-1 text-center"><button ng-click="disableRate(nuevoPasavante, 0, $index)" type="button" class="btn btn-danger" title="Eliminar tarifa"><i class="glyphicon glyphicon-remove"></i></button> </td>
                             </tr>
                             </tbody>
                             <tfoot>
@@ -109,7 +109,7 @@
                     <td class="text-right"><strong>Total</strong></td>
                 </tr>
                 </thead>
-                <tbody ng-repeat="terminal in pasavante.TERMINALES | filter: searchText track by $index">
+                <tbody ng-repeat="terminal in pasavante.TERMINALES | filter: searchText track by $index" ng-init="indexTerminal = $index">
                 <tr ng-click="terminal.DETALLE = !terminal.DETALLE" class="animate clickeable-row animated-row" ng-class="terminal.DETALLE ? 'selected-row' : ''">
                     <td class="col-lg-2"><span ng-show="$first"><strong>{{ pasavante.NAVEGACION }}</strong></span></td>
                     <td class="col-lg-1"><button type="button" ng-click="editarPasavante(pasavante, $index, $event)" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i></button></td>
@@ -121,7 +121,7 @@
                     <td class="col-lg-1 text-right"><strong ng-show="terminal.VALOR_MINIMO">{{ terminal.VALOR_MINIMO | currency: '$' : 2 }}</strong></td>
                     <td class="col-lg-1 text-right"><strong>{{ terminal.VALOR_TOTAL | currency: '$' : 2 }}</strong></td>
                 </tr>
-                <tr ng-show="terminal.DETALLE" ng-repeat="tarifa in terminal.TARIFAS">
+                <tr ng-show="terminal.DETALLE" ng-repeat="tarifa in terminal.TARIFAS track by $index">
                     <td></td>
                     <td></td>
                     <td><span ng-show="tarifa.MINIMO">Mínimo a facturar <i class="glyphicon glyphicon-arrow-right"></i></span></td>
@@ -129,7 +129,7 @@
                     <td class="text-center"><span ng-show="tarifa.FECHA_FIN != null" ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.FECHA_FIN | date: 'yyyy-MM-dd' }}</span></td>
                     <td class="text-right">{{ tarifa.VALOR_TARIFA | currency: '$' : 2 }}</td>
                     <td class="text-center">
-                        <button ng-hide="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-danger" ng-click="disableRate(tarifa)" title="Dar de baja"><i class="glyphicon glyphicon-remove"></i></button>
+                        <button ng-hide="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-danger" ng-click="disableRate(pasavante, indexTerminal, $index)" title="Dar de baja"><i class="glyphicon glyphicon-remove"></i></button>
                         <button ng-show="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-primary" ng-click="enableRate(pasavante.ID_TIPO_NAVEGACION, terminal.ID_TERMINAL, tarifa)" title="Habilitar tarifa"><i class="glyphicon glyphicon-check"></i></button>
                     </td>
                     <td></td>

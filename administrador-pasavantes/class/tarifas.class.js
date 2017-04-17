@@ -58,6 +58,7 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function
 				//console.log(response);
 				if (response.data.status == 'OK'){
 					this.FECHA_FIN = new Date();
+					this.MINIMO = false;
 					deferred.resolve(response.data);
 				} else {
 					deferred.reject(response.data);
@@ -68,7 +69,7 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function
 			return deferred.promise;
 		}
 
-		enable(){
+		enable(navegacion, muelle){
 			const deferred = $q.defer();
 			const url = `${APP_CONFIG.SERVER_URL}/pasavantes/pasavante/update/${this.ID}`;
 			let adapterObject = {};

@@ -52,7 +52,7 @@
                                 </td>
                                 <td ng-if="!tarifa.MINIMO" class="col-lg-2 text-right" style="font-size: large">{{ tarifa.VALOR | currency: tarifa.SIMBOLO : 2 }}</td>
                                 <td ng-if="tarifa.MINIMO" class="col-lg-2 text-right" style="font-size: large"><input class="form-control text-right" type="number" step=".01" min="1" ng-model="tarifa.VALOR_MINIMO"></td>
-                                <td class="col-lg-1 text-center"><button ng-click="nuevaPatente.removeRate($index)" type="button" class="btn btn-danger" title="Eliminar tarifa"><i class="glyphicon glyphicon-remove"></i></button> </td>
+                                <td class="col-lg-1 text-center"><button ng-click="disableRate(nuevaPatente, $index)" type="button" class="btn btn-danger" title="Eliminar tarifa"><i class="glyphicon glyphicon-remove"></i></button> </td>
                             </tr>
                             </tbody>
                             <tfoot>
@@ -112,14 +112,14 @@
                     <td class="col-lg-1 text-right"><strong ng-show="patente.VALOR_MINIMO">{{ patente.VALOR_MINIMO | currency: '$' : 2 }}</strong></td>
                     <td class="col-lg-1 text-right"><strong>{{ patente.VALOR_TOTAL | currency: '$' : 2 }}</strong></td>
                 </tr>
-                <tr ng-show="patente.DETALLE" ng-repeat="tarifa in patente.TARIFAS">
+                <tr ng-show="patente.DETALLE" ng-repeat="tarifa in patente.TARIFAS track by $index">
                     <td></td>
                     <td><span ng-show="tarifa.MINIMO">Mínimo a facturar <i class="glyphicon glyphicon-arrow-right"></i></span></td>
                     <td ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.fullDescription }}</td>
                     <td class="text-center"><span ng-show="tarifa.FECHA_FIN != null" ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.FECHA_FIN | date: 'yyyy-MM-dd' }}</span></td>
                     <td class="text-right">{{ tarifa.VALOR_TARIFA | currency: '$' : 2 }}</td>
                     <td class="text-center">
-                        <button ng-hide="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-danger" ng-click="disableRate(tarifa)" title="Dar de baja"><i class="glyphicon glyphicon-remove"></i></button>
+                        <button ng-hide="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-danger" ng-click="disableRate(patente, $index)" title="Dar de baja"><i class="glyphicon glyphicon-remove"></i></button>
                         <button ng-show="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha" class="btn btn-primary" ng-click="enableRate(patente.arboladura, tarifa)" title="Habilitar tarifa"><i class="glyphicon glyphicon-check"></i></button>
                     </td>
                     <td></td>
