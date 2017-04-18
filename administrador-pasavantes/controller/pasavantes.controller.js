@@ -7,6 +7,7 @@
 administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Tarifa', 'pasavantesFactory', 'localStorageService', 'dialogsService', '$timeout', function($scope, Pasavante, Tarifa, pasavantesFactory, localStorageService, dialogsService, $timeout){
 
     $scope.fecha = new Date();
+    $scope.fecha.setHours(23, 59, 59);
 
     $scope.nuevoPasavante = new Pasavante();
 
@@ -30,7 +31,7 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
     });
 
     function cargarPasavantes (){
-        pasavantesFactory.getPasavantes().then(function(pasavantes){
+        pasavantesFactory.getPasavantes().then((pasavantes) => {
             //console.log(pasavantes);
             $scope.pasavantes = pasavantes;
             $scope.pasavantes.forEach(function(pasavante){
@@ -52,34 +53,32 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
                     })
                 })
             })
-        }, function(error){
-            //console.log(error)
-            dialogsService.error('Error', error.message);
-        });
+        }).catch((error) => {
+			//console.log(error)
+			dialogsService.error('Error', error.message);
+		});
     }
 
     $scope.setNavegacion = function(item, model, label, event){
-        $scope.nuevoPasavante.setTipoNavegacion(item.ID_TRAFICO);
+        $scope.nuevoPasavante.tipoNavegacion = item.ID_TRAFICO;
     };
 
     $scope.unsetNavegacion = function(){
         $scope.nuevoPasavante.NAVEGACION = '';
-        $scope.nuevoPasavante.ID_TIPO_NAVEGACION = 0;
-        $scope.nuevoPasavante.resetTarifasId();
+        $scope.nuevoPasavante.tipoNavegacion = 0;
     };
 
     $scope.setMuelle = function(item, model, label, event){
-        $scope.nuevoPasavante.setMuelle(item.CODIGO_MUELLE);
+        $scope.nuevoPasavante.muelle = item.CODIGO_MUELLE;
     };
 
     $scope.unsetMuelle = function(){
         $scope.nuevoPasavante.TERMINALES[0].MUELLE = '';
-        $scope.nuevoPasavante.TERMINALES[0].ID_TERMINAL = 0;
-        $scope.nuevoPasavante.resetTarifasId();
+        $scope.nuevoPasavante.muelle = 0;
     };
 
     $scope.checkMuelle = function(){
-        $timeout(function(){
+        $timeout(() => {
             if ($scope.nuevoPasavante.TERMINALES[0].MUELLE == undefined){
                 $scope.unsetMuelle();
             }
@@ -94,28 +93,17 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
     };
 
     $scope.setMinimo = function(index){
-        for (var i = 0; i < $scope.nuevoPasavante.TERMINALES[0].TARIFAS.length; i++){
+        for (let i = 0; i < $scope.nuevoPasavante.TERMINALES[0].TARIFAS.length; i++){
             if (index != i) $scope.nuevoPasavante.TERMINALES[0].TARIFAS[i].MINIMO = false;
         }
     };
 
     $scope.setTarifa = function(item, model, label, event, index){
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].ID_TARIFA = item.ID_TARIFA;
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].CODIGO_TARIFA = item.CODIGO_TARIFA;
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].DESCRI_TARIFA = item.DESCRI_TARIFA;
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].SIMBOLO = item.SIMBOLO;
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].CODIGO_AFIP = item.CODIGO_AFIP;
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].getValor();
+        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].data = item;
     };
 
     $scope.unsetTarifa = function(index){
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].BACKUP = '';
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].ID_TARIFA = '';
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].CODIGO_TARIFA = '';
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].DESCRI_TARIFA = '';
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].SIMBOLO = '';
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].CODIGO_AFIP = '';
-        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].VALOR = '';
+        $scope.nuevoPasavante.TERMINALES[0].TARIFAS[index].unsetData();
     };
 
     $scope.setMinDate = function(tarifa){
@@ -140,25 +128,21 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
         }
     };
 
-    $scope.disableRate = function(tarifa){
-        var confirm = dialogsService.confirm('Dar de baja tarifa', 'Se dará de baja la tarifa seleccionada. ¿Confirma la operación?');
-        confirm.result.then(function(){
-            tarifa.disable().then(function(data){
-                //console.log(data);
-                $scope.fecha = new Date();
-            }, function(error){
-                //console.log(error);
-                dialogsService.error('Error', error.message);
-            });
-        })
+    $scope.disableRate = function(pasavante, terminal, tarifa){
+        pasavante.removeRate(terminal, tarifa).then((data) => {
+            cargarPasavantes();
+        }).catch((error) => {
+            //console.log(error);
+			dialogsService.error('Error', error.message);
+        });
     };
 
     $scope.enableRate = function(navegacion, muelle, tarifa){
-        tarifa.enable(navegacion, muelle).then(function(data){
+        tarifa.enable(navegacion, muelle).then((data) => {
             //console.log(data);
-        }, function(error){
-            dialogsService.error('Error', error.message);
-        })
+        }).catch((error) => {
+			dialogsService.error('Error', error.message);
+		})
     };
 
     function searchPasavanteRates (){
@@ -167,7 +151,7 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
                 pasavante.TERMINALES.forEach(function(muelle){
                     if (muelle.ID_TERMINAL == $scope.nuevoPasavante.TERMINALES[0].ID_TERMINAL){
                         muelle.TARIFAS.forEach(function(tarifa){
-                            for (var i = 0; i < $scope.nuevoPasavante.TERMINALES[0].TARIFAS.length; i++){
+                            for (let i = 0; i < $scope.nuevoPasavante.TERMINALES[0].TARIFAS.length; i++){
                                 if ($scope.nuevoPasavante.TERMINALES[0].TARIFAS[i].ID_TARIFA == tarifa.ID_TARIFA) {
                                     //console.log('la tarifa ' + i + ' si esta');
                                     $scope.nuevoPasavante.TERMINALES[0].TARIFAS[i].ID = tarifa.ID;
@@ -183,7 +167,7 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
     $scope.guardarPasavante = function(){
         $scope.pasavanteGuardado = true;
         searchPasavanteRates();
-        $scope.nuevoPasavante.saveChanges().then(function(result){
+        $scope.nuevoPasavante.saveChanges().then((result) => {
             if (result.status == 'OK'){
                 dialogsService.notify('Pasavantes', 'Todas las tarifas se guardaron correctamente');
                 //$scope.limpiarFormulario();
@@ -191,18 +175,18 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
                 dialogsService.notify('Pasavantes', 'Se produjeron errores en ' + result.data + 'tarifas.');
             }
             cargarPasavantes();
-        }, function(error){
-            if (error.status == 'NORATES'){
-                dialogsService.notify('Pasavantes', error.message);
-            } else {
-                dialogsService.error('Pasavantes', error.message);
-            }
-        })
+        }).catch((error) => {
+			if (error.status == 'NORATES'){
+				dialogsService.notify('Pasavantes', error.message);
+			} else {
+				dialogsService.error('Pasavantes', error.message);
+			}
+		})
     };
 
     $scope.editarPasavante = function(pasavante, indexTerminal, event){
         event.stopPropagation();
-        var adapterObject = {
+        let adapterObject = {
             ID_TIPO_NAVEGACION: pasavante.ID_TIPO_NAVEGACION,
             NAVEGACION: $scope.traficos[pasavante.ID_TIPO_NAVEGACION],
             TERMINALES: [
@@ -211,7 +195,7 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
         };
 
         adapterObject.TERMINALES[0].MUELLE = $scope.muelles[adapterObject.TERMINALES[0].ID_TERMINAL];
-        for (var i = 0; i < adapterObject.TERMINALES[0].TARIFAS.length; i++){
+        for (let i = 0; i < adapterObject.TERMINALES[0].TARIFAS.length; i++){
             adapterObject.TERMINALES[0].TARIFAS[i].BACKUP = $scope.tarifas[adapterObject.TERMINALES[0].TARIFAS[i].ID_TARIFA]
         }
 

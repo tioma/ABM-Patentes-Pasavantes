@@ -3,25 +3,25 @@
  */
 administradorPasavantes.factory('pasavantesFactory', ['$http', '$q', 'APP_CONFIG', 'Pasavante', 'Tarifa', 'localStorageService', function($http, $q, APP_CONFIG, Pasavante, Tarifa, localStorageService){
 
-	var pasavantesFactory = {
+	const pasavantesFactory = {
 		muelles: localStorageService.get('muelles'),
 		trafico: localStorageService.get('trafico'),
 		tarifas: localStorageService.get('tarifas'),
 		getPasavantes: function(){
-			var deferred = $q.defer();
-			var url = APP_CONFIG.SERVER_URL + '/pasavantes';
-			$http.get(url).then(function(response){
+			const deferred = $q.defer();
+			const url = `${APP_CONFIG.SERVER_URL}/pasavantes`;
+			$http.get(url).then((response) => {
 				if (response.data.status == 'OK'){
-					var pasavantesArray = [];
-					response.data.data.forEach(function(pasavanteData){
-						var nuevoPasavante = new Pasavante(pasavanteData);
+					let pasavantesArray = [];
+					response.data.data.forEach(pasavanteData => {
+						let nuevoPasavante = new Pasavante(pasavanteData);
 						pasavantesArray.push(nuevoPasavante)
 					});
 					deferred.resolve(pasavantesArray);
 				} else {
 					deferred.reject(response.data);
 				}
-			}, function(response){
+			}).catch((response) => {
 				deferred.reject(response.data);
 			});
 			return deferred.promise

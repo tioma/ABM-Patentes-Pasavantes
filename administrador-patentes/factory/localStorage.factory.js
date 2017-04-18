@@ -3,25 +3,25 @@
  */
 administradorPatentes.factory('localStorageFactory', ['$http', '$q', 'APP_CONFIG', 'localStorageService', function($http, $q, APP_CONFIG, localStorageService){
 
-	var localStorageFactory = {
+	const localStorageFactory = {
 		getRates: function(){
-			var deferred = $q.defer();
-			var url = APP_CONFIG.SERVER_URL + '/rates/document/12';
-			$http.get(url).then(function(response){
+			const deferred = $q.defer();
+			const url = APP_CONFIG.SERVER_URL + '/rates/document/12';
+			$http.get(url).then((response) => {
 				localStorageService.set('tarifas', response.data.data);
 				deferred.resolve();
-			}, function(response){
+			}).catch((response) => {
 				deferred.reject();
 			});
 			return deferred.promise;
 		},
 		getShipTypes: function(){
-			var deferred = $q.defer();
-			var url = APP_CONFIG.API_ENDPOINT + '/ws-embarcaciones.php';
-			$http.get(url).then(function(response){
+			const deferred = $q.defer();
+			const url = APP_CONFIG.API_ENDPOINT + '/ws-embarcaciones.php';
+			$http.get(url).then((response) => {
 				localStorageService.set('embarcaciones', response.data);
 				deferred.resolve();
-			}, function(response){
+			}).catch((response) => {
 				deferred.reject();
 			});
 			return deferred.promise;

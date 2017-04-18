@@ -7,6 +7,7 @@
 administradorPatentes.controller('patentesCtrl', ['$scope', 'Patente', 'Tarifa', 'patentesFactory', 'localStorageService', 'dialogsService', function($scope, Patente, Tarifa, patentesFactory, localStorageService, dialogsService){
 
     $scope.fecha = new Date();
+    $scope.fecha.setHours(23, 59, 59);
 
     $scope.nuevaPatente = new Patente();
 
@@ -41,7 +42,12 @@ administradorPatentes.controller('patentesCtrl', ['$scope', 'Patente', 'Tarifa',
     }
     
     $scope.setArboladura = function(item, model, label, event){
-        $scope.nuevaPatente.setArboladura(item.ID);
+        $scope.nuevaPatente.arboladura = item.ID;
+    };
+
+    $scope.unsetArboladura = function(){
+        $scope.nuevaPatente.ARBOLADURA = '';
+        $scope.nuevaPatente.arboladura = 0
     };
 
     $scope.setMinimo = function(index){
@@ -51,22 +57,11 @@ administradorPatentes.controller('patentesCtrl', ['$scope', 'Patente', 'Tarifa',
     };
 
     $scope.setTarifa = function(item, model, label, event, index){
-        $scope.nuevaPatente.TARIFAS[index].ID_TARIFA = item.ID_TARIFA;
-        $scope.nuevaPatente.TARIFAS[index].CODIGO_TARIFA = item.CODIGO_TARIFA;
-        $scope.nuevaPatente.TARIFAS[index].DESCRI_TARIFA = item.DESCRI_TARIFA;
-        $scope.nuevaPatente.TARIFAS[index].SIMBOLO = item.SIMBOLO;
-        $scope.nuevaPatente.TARIFAS[index].CODIGO_AFIP = item.CODIGO_AFIP;
-        $scope.nuevaPatente.TARIFAS[index].getValor();
+        $scope.nuevaPatente.TARIFAS[index].data = item;
     };
 
     $scope.unsetTarifa = function(index){
-        $scope.nuevaPatente.TARIFAS[index].BACKUP = '';
-        $scope.nuevaPatente.TARIFAS[index].ID_TARIFA = '';
-        $scope.nuevaPatente.TARIFAS[index].CODIGO_TARIFA = '';
-        $scope.nuevaPatente.TARIFAS[index].DESCRI_TARIFA = '';
-        $scope.nuevaPatente.TARIFAS[index].SIMBOLO = '';
-        $scope.nuevaPatente.TARIFAS[index].CODIGO_AFIP = '';
-        $scope.nuevaPatente.TARIFAS[index].VALOR = '';
+        $scope.nuevaPatente.TARIFAS[index].unsetData();
     };
 
     $scope.setMinDate = function(tarifa){
@@ -91,16 +86,11 @@ administradorPatentes.controller('patentesCtrl', ['$scope', 'Patente', 'Tarifa',
         }
     };
 
-    $scope.disableRate = function(tarifa){
-        var confirm = dialogsService.confirm('Dar de baja tarifa', 'Se dará de baja la tarifa seleccionada. ¿Confirma la operación?');
-        confirm.result.then(function(){
-            tarifa.disable().then(function(data){
-                //console.log(data);
-                $scope.fecha = new Date();
-            }, function(error){
-                //console.log(error);
-                dialogsService.error('Error', error.message);
-            });
+    $scope.disableRate = function(patente, tarifa){
+        patente.removeRate(tarifa).then(() => {
+            cargarPatentes();
+        }).catch((error) => {
+            dialogsService.error('Error', error.message);
         })
     };
 
