@@ -1,7 +1,7 @@
 /**
  * Created by Artiom on 4/10/16.
  */
-administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function($http, APP_CONFIG, $q){
+administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', 'dialogsService', function($http, APP_CONFIG, $q, dialogsService){
 
 	class Tarifa {
 		constructor(tarifaData){
@@ -53,18 +53,21 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function
 
 		disable(){
 			const deferred = $q.defer();
-			const url = `${APP_CONFIG.SERVER_URL}/pasavantes/pasavante/disable/${this.ID}`;
-			$http.put(url).then(response => {
-				//console.log(response);
-				if (response.data.status == 'OK'){
-					this.FECHA_FIN = new Date();
-					this.MINIMO = false;
-					deferred.resolve(response.data);
-				} else {
-					deferred.reject(response.data);
-				}
-			}, response => {
-				deferred.reject(response.data)
+			const confirm = dialogsService.confirm('Dar de baja tarifa', 'Se dará de baja la tarifa seleccionada. ¿Confirma la operación?');
+			confirm.result.then(() => {
+				const url = `${APP_CONFIG.SERVER_URL}/pasavantes/pasavante/disable/${this.ID}`;
+				$http.put(url).then(response => {
+					//console.log(response);
+					if (response.data.status == 'OK'){
+						this.FECHA_FIN = new Date();
+						this.MINIMO = false;
+						deferred.resolve(response.data);
+					} else {
+						deferred.reject(response.data);
+					}
+				}).catch(response => {
+					deferred.reject(response.data)
+				});
 			});
 			return deferred.promise;
 		}

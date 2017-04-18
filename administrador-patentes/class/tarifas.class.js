@@ -1,7 +1,7 @@
 /**
  * Created by Artiom on 4/10/16.
  */
-administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function($http, APP_CONFIG, $q){
+administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', 'dialogsService', function($http, APP_CONFIG, $q, dialogsService){
 
 	class Tarifa {
 		constructor(tarifaData){
@@ -46,7 +46,7 @@ administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function($
 					this.VALOR = response.data.data[0].VALORES[0].VALOR_TARIFA;
 				}
 				deferred.resolve();
-			}, response => {
+			}).catch(response => {
 				deferred.reject(response.data)
 			});
 			return deferred.promise;
@@ -54,18 +54,21 @@ administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function($
 
 		disable(){
 			const deferred = $q.defer();
-			const url = `${APP_CONFIG.SERVER_URL}/patentes/patente/disable/${this.ID}`;
-			$http.put(url).then(response => {
-				//console.log(response);
-				if (response.data.status == 'OK'){
-					this.FECHA_FIN = new Date();
-					this.MINIMO = false;
-					deferred.resolve(response.data);
-				} else {
-					deferred.reject(response.data);
-				}
-			}, response => {
-				deferred.reject(response.data)
+			const confirm = dialogsService.confirm('Dar de baja tarifa', 'Se dará de baja la tarifa seleccionada. ¿Confirma la operación?');
+			confirm.result.then(() => {
+				const url = `${APP_CONFIG.SERVER_URL}/patentes/patente/disable/${this.ID}`;
+				$http.put(url).then(response => {
+					//console.log(response);
+					if (response.data.status == 'OK'){
+						this.FECHA_FIN = new Date();
+						this.MINIMO = false;
+						deferred.resolve(response.data);
+					} else {
+						deferred.reject(response.data);
+					}
+				}).catch(response => {
+					deferred.reject(response.data)
+				});
 			});
 			return deferred.promise;
 		}
@@ -98,7 +101,7 @@ administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function($
 				} else {
 					deferred.reject(response.data);
 				}
-			}, response => {
+			}).catch(response => {
 				deferred.reject(response.data);
 			});
 			return deferred.promise;
@@ -117,7 +120,7 @@ administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function($
 						this.STATUS = 'ERROR';
 						deferred.resolve(false);
 					}
-				}, response => {
+				}).catch(response => {
 					//console.log(response);
 					this.STATUS = 'ERROR';
 					this.ERROR = response.data.message;
@@ -134,7 +137,7 @@ administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function($
 						this.STATUS = 'ERROR';
 						deferred.resolve(false);
 					}
-				}, response => {
+				}).catch(response => {
 					this.STATUS = 'ERROR';
 					//console.log(response);
 					this.ERROR = response.data.message;
@@ -145,12 +148,12 @@ administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', function($
 		}
 
 		addRate(adapterObject){
-			var url = APP_CONFIG.SERVER_URL + '/patentes/patente';
+			let url = APP_CONFIG.SERVER_URL + '/patentes/patente';
 			return $http.post(url, adapterObject);
 		}
 
 		updateRate(adapterObject){
-			var url = APP_CONFIG.SERVER_URL + '/patentes/patente/update/' + this.ID;
+			let url = APP_CONFIG.SERVER_URL + '/patentes/patente/update/' + this.ID;
 			return $http.put(url, adapterObject);
 		}
 

@@ -3,7 +3,7 @@
  */
 administradorPatentes.factory('patentesFactory', ['$http', '$q', 'APP_CONFIG', 'Patente', function($http, $q, APP_CONFIG, Patente){
 
-	var patentesFactory = {
+	const patentesFactory = {
 		getPatentes: function(){
 			const deferred = $q.defer();
 			const url = `${APP_CONFIG.SERVER_URL}/patentes`;
@@ -18,7 +18,7 @@ administradorPatentes.factory('patentesFactory', ['$http', '$q', 'APP_CONFIG', '
 				} else {
 					deferred.reject(response.data);
 				}
-			}, function(response){
+			}).catch((response) => {
 				deferred.reject(response.data);
 			});
 			return deferred.promise

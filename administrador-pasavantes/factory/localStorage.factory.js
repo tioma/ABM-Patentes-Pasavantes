@@ -3,14 +3,14 @@
  */
 administradorPasavantes.factory('localStorageFactory', ['$http', '$q', 'APP_CONFIG', 'localStorageService', function($http, $q, APP_CONFIG, localStorageService){
 
-	var localStorageFactory = {
+	const localStorageFactory = {
 		getRates: function(){
 			const deferred = $q.defer();
 			const url = `${APP_CONFIG.SERVER_URL}/rates/document/11`;
 			$http.get(url).then(response => {
 				localStorageService.set('tarifas', response.data.data);
 				deferred.resolve();
-			}, response => {
+			}).catch(error => {
 				deferred.reject();
 			});
 			return deferred.promise;
@@ -21,7 +21,7 @@ administradorPasavantes.factory('localStorageFactory', ['$http', '$q', 'APP_CONF
 			$http.get(url).then(response => {
 				localStorageService.set('trafico', response.data);
 				deferred.resolve();
-			}, response => {
+			}).catch(error => {
 				deferred.reject();
 			});
 			return deferred.promise;
@@ -32,7 +32,7 @@ administradorPasavantes.factory('localStorageFactory', ['$http', '$q', 'APP_CONF
 			$http.get(url).then(response => {
 				localStorageService.set('muelles', response.data);
 				deferred.resolve();
-			}, response => {
+			}).catch(error => {
 				deferred.reject();
 			});
 			return deferred.promise;

@@ -1,7 +1,7 @@
 /**
  * Created by Artiom on 4/10/16.
  */
-administradorPasavantes.factory('Pasavante', ['$http', 'APP_CONFIG', '$q', 'Tarifa', 'dialogsService', function($http, APP_CONFIG, $q, Tarifa, dialogsService){
+administradorPasavantes.factory('Pasavante', ['$http', 'APP_CONFIG', '$q', 'Tarifa', function($http, APP_CONFIG, $q, Tarifa){
 
 	class Pasavante {
 		constructor(pasavanteData){
@@ -48,22 +48,19 @@ administradorPasavantes.factory('Pasavante', ['$http', 'APP_CONFIG', '$q', 'Tari
 
 		removeRate(terminal, tarifa){
 			const deferred = $q.defer();
-			const confirm = dialogsService.confirm('Dar de baja tarifa', 'Se dará de baja la tarifa seleccionada. ¿Confirma la operación?');
-			confirm.result.then(() => {
-				if (this.TERMINALES[terminal].TARIFAS[tarifa].ID){
-					this.TERMINALES[terminal].TARIFAS[tarifa].disable().then((data) => {
-						//console.log(data);
-						this.TERMINALES[terminal].TARIFAS.splice(tarifa, 1);
-						deferred.resolve(data);
-					}).catch((error) => {
-						//console.log(error);
-						deferred.reject(error);
-					});
-				} else {
+			if (this.TERMINALES[terminal].TARIFAS[tarifa].ID){
+				this.TERMINALES[terminal].TARIFAS[tarifa].disable().then((data) => {
+					//console.log(data);
 					this.TERMINALES[terminal].TARIFAS.splice(tarifa, 1);
-					deferred.resolve();
-				}
-			});
+					deferred.resolve(data);
+				}).catch((error) => {
+					//console.log(error);
+					deferred.reject(error);
+				});
+			} else {
+				this.TERMINALES[terminal].TARIFAS.splice(tarifa, 1);
+				deferred.resolve();
+			}
 			return deferred.promise;
 
 		}

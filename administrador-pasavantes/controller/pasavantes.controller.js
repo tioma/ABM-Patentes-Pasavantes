@@ -31,7 +31,7 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
     });
 
     function cargarPasavantes (){
-        pasavantesFactory.getPasavantes().then(function(pasavantes){
+        pasavantesFactory.getPasavantes().then((pasavantes) => {
             //console.log(pasavantes);
             $scope.pasavantes = pasavantes;
             $scope.pasavantes.forEach(function(pasavante){
@@ -53,10 +53,10 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
                     })
                 })
             })
-        }, function(error){
-            //console.log(error)
-            dialogsService.error('Error', error.message);
-        });
+        }).catch((error) => {
+			//console.log(error)
+			dialogsService.error('Error', error.message);
+		});
     }
 
     $scope.setNavegacion = function(item, model, label, event){
@@ -78,7 +78,7 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
     };
 
     $scope.checkMuelle = function(){
-        $timeout(function(){
+        $timeout(() => {
             if ($scope.nuevoPasavante.TERMINALES[0].MUELLE == undefined){
                 $scope.unsetMuelle();
             }
@@ -93,7 +93,7 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
     };
 
     $scope.setMinimo = function(index){
-        for (var i = 0; i < $scope.nuevoPasavante.TERMINALES[0].TARIFAS.length; i++){
+        for (let i = 0; i < $scope.nuevoPasavante.TERMINALES[0].TARIFAS.length; i++){
             if (index != i) $scope.nuevoPasavante.TERMINALES[0].TARIFAS[i].MINIMO = false;
         }
     };
@@ -138,11 +138,11 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
     };
 
     $scope.enableRate = function(navegacion, muelle, tarifa){
-        tarifa.enable(navegacion, muelle).then(function(data){
+        tarifa.enable(navegacion, muelle).then((data) => {
             //console.log(data);
-        }, function(error){
-            dialogsService.error('Error', error.message);
-        })
+        }).catch((error) => {
+			dialogsService.error('Error', error.message);
+		})
     };
 
     function searchPasavanteRates (){
@@ -151,7 +151,7 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
                 pasavante.TERMINALES.forEach(function(muelle){
                     if (muelle.ID_TERMINAL == $scope.nuevoPasavante.TERMINALES[0].ID_TERMINAL){
                         muelle.TARIFAS.forEach(function(tarifa){
-                            for (var i = 0; i < $scope.nuevoPasavante.TERMINALES[0].TARIFAS.length; i++){
+                            for (let i = 0; i < $scope.nuevoPasavante.TERMINALES[0].TARIFAS.length; i++){
                                 if ($scope.nuevoPasavante.TERMINALES[0].TARIFAS[i].ID_TARIFA == tarifa.ID_TARIFA) {
                                     //console.log('la tarifa ' + i + ' si esta');
                                     $scope.nuevoPasavante.TERMINALES[0].TARIFAS[i].ID = tarifa.ID;
@@ -167,7 +167,7 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
     $scope.guardarPasavante = function(){
         $scope.pasavanteGuardado = true;
         searchPasavanteRates();
-        $scope.nuevoPasavante.saveChanges().then(function(result){
+        $scope.nuevoPasavante.saveChanges().then((result) => {
             if (result.status == 'OK'){
                 dialogsService.notify('Pasavantes', 'Todas las tarifas se guardaron correctamente');
                 //$scope.limpiarFormulario();
@@ -175,18 +175,18 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
                 dialogsService.notify('Pasavantes', 'Se produjeron errores en ' + result.data + 'tarifas.');
             }
             cargarPasavantes();
-        }, function(error){
-            if (error.status == 'NORATES'){
-                dialogsService.notify('Pasavantes', error.message);
-            } else {
-                dialogsService.error('Pasavantes', error.message);
-            }
-        })
+        }).catch((error) => {
+			if (error.status == 'NORATES'){
+				dialogsService.notify('Pasavantes', error.message);
+			} else {
+				dialogsService.error('Pasavantes', error.message);
+			}
+		})
     };
 
     $scope.editarPasavante = function(pasavante, indexTerminal, event){
         event.stopPropagation();
-        var adapterObject = {
+        let adapterObject = {
             ID_TIPO_NAVEGACION: pasavante.ID_TIPO_NAVEGACION,
             NAVEGACION: $scope.traficos[pasavante.ID_TIPO_NAVEGACION],
             TERMINALES: [
@@ -195,7 +195,7 @@ administradorPasavantes.controller('pasavantesCtrl', ['$scope', 'Pasavante', 'Ta
         };
 
         adapterObject.TERMINALES[0].MUELLE = $scope.muelles[adapterObject.TERMINALES[0].ID_TERMINAL];
-        for (var i = 0; i < adapterObject.TERMINALES[0].TARIFAS.length; i++){
+        for (let i = 0; i < adapterObject.TERMINALES[0].TARIFAS.length; i++){
             adapterObject.TERMINALES[0].TARIFAS[i].BACKUP = $scope.tarifas[adapterObject.TERMINALES[0].TARIFAS[i].ID_TARIFA]
         }
 
