@@ -2,7 +2,7 @@
 
     <form class="form-horizontal well" ng-submit="guardarPatente()">
         <fieldset>
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <div class="form-group">
                     <div class="input-group">
                         <label for="tipoEmbarcacionSelect" class="input-group-addon"><strong>Arboladura</strong></label>
@@ -11,14 +11,15 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-8">
+            <div class="col-lg-9">
                 <div class = "panel panel-primary">
                     <div class = "panel-heading panel-primary">TARIFAS</div>
                     <div class = "panel-body">
                         <table class="table" id="ratesTable">
                             <thead>
                             <tr>
-                                <td><strong>Mínimo a facturar</strong></td>
+                                <td class="text-center"><strong>Mínimo a facturar</strong></td>
+                                <td class="text-center"><strong>Por TRN</strong></td>
                                 <td><strong>Tarifa</strong></td>
                                 <td><strong>Desde</strong></td>
                                 <td><strong>Hasta</strong></td>
@@ -28,11 +29,15 @@
                             </thead>
                             <tbody>
                             <tr ng-repeat="tarifa in nuevaPatente.TARIFAS track by $index" uib-popover="{{ nuevaPatente.TARIFAS[$index].ERROR }}" popover-trigger="'mouseenter'" ng-class="nuevaPatente.TARIFAS[$index].STATUS == 'ERROR' ? 'error-tarifa' : ''">
-                                <td class="col-lg-1 text-center">
+                                <td class="col-lg-1 text-center center-block">
                                     <input ng-show="!tarifa.FECHA_FIN || tarifa.FECHA_FIN > fecha" type="checkbox" ng-model="tarifa.MINIMO" ng-change="setMinimo($index)" class="radio text-center">
                                     <span ng-show="tarifa.FECHA_FIN && tarifa.FECHA_FIN <= fecha" class="text-danger">Dada de baja</span>
                                 </td>
-                                <td class="col-lg-4">
+                                <td class="col-lg-1 text-center center-block">
+                                    <input ng-show="!tarifa.MINIMO" type="checkbox" ng-model="tarifa.MODO" class="radio text-center" ng-true-value="0" ng-false-value="1">
+                                    <span ng-show="tarifa.MINIMO"><strong>Valor fijo</strong></span>
+                                </td>
+                                <td class="col-lg-3">
                                     <div class="input-group">
                                         <input type="text" ng-model="tarifa.BACKUP" uib-typeahead="tarifa as tarifa.fullDescription for tarifa in tarifas | filter:$viewValue | limitTo:15" class="form-control" typeahead-editable="false" typeahead-min-length="1" placeholder="Seleccione una tarifa" typeahead-on-select="setTarifa($item, $model, $label, $event, $index)" ng-required="true" autocomplete="off">
                                         <span class="input-group-btn"><button type="button" class="btn btn-default" ng-click="unsetTarifa($index)"><i class="glyphicon glyphicon-remove"></i></button></span>
@@ -58,7 +63,8 @@
                             <tfoot>
                             <tr>
                                 <td class="col-lg-1"></td>
-                                <td class="col-lg-4"></td>
+                                <td class="col-lg-1"></td>
+                                <td class="col-lg-3"></td>
                                 <td class="col-lg-2"></td>
                                 <td class="col-lg-2"></td>
                                 <td class="col-lg-2"></td>
@@ -94,6 +100,7 @@
                     <td>Editar</td>
                     <td><strong>Arboladura</strong></td>
                     <td><strong>Tarifa</strong></td>
+                    <td><strong>Modo</strong></td>
                     <td class="text-center"><strong>Fecha de baja</strong></td>
                     <td class="text-right"><strong>Valor tarifa</strong></td>
                     <td class="text-center"><strong>Modificar</strong></td>
@@ -109,6 +116,7 @@
                     <td class="col-lg-1"></td>
                     <td class="col-lg-1"></td>
                     <td class="col-lg-1"></td>
+                    <td class="col-lg-1"></td>
                     <td class="col-lg-1 text-right"><strong ng-show="patente.VALOR_MINIMO">{{ patente.VALOR_MINIMO | currency: '$' : 2 }}</strong></td>
                     <td class="col-lg-1 text-right"><strong>{{ patente.VALOR_TOTAL | currency: '$' : 2 }}</strong></td>
                 </tr>
@@ -116,6 +124,7 @@
                     <td></td>
                     <td><span ng-show="tarifa.MINIMO">Mínimo a facturar <i class="glyphicon glyphicon-arrow-right"></i></span></td>
                     <td ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.fullDescription }}</td>
+                    <td>{{ tarifa.modoCobro }}</td>
                     <td class="text-center"><span ng-show="tarifa.FECHA_FIN != null" ng-class="tarifa.FECHA_FIN != null && tarifa.FECHA_FIN <= fecha ? 'tarifa-baja' : ''">{{ tarifa.FECHA_FIN | date: 'yyyy-MM-dd' }}</span></td>
                     <td class="text-right">{{ tarifa.VALOR_TARIFA | currency: '$' : 2 }}</td>
                     <td class="text-center">

@@ -41,3 +41,8 @@ body {
     -webkit-animation-duration:0;
     animation-duration:0;
 }
+
+input[type=checkbox] {
+    margin-left: 40%;
+    transform: scale(1.5);
+}

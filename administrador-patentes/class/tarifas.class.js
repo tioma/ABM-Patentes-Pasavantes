@@ -7,6 +7,7 @@ administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', 'dialogsSe
 		constructor(tarifaData){
 			this.MINIMO = false;
 			this.VALOR_MINIMO = 1;
+			this.MODO = 0;
 			this.CONTROL_MIN = true;
 			this.DESDE_OPENED = false;
 			this.HASTA_OPENED = false;
@@ -77,6 +78,7 @@ administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', 'dialogsSe
 			let adapterObject = {};
 			adapterObject.id_tipo_embarcacion = parseInt(embarcacion);
 			adapterObject.id_tarifa = this.ID_TARIFA;
+			adapterObject.modo = this.MODO;
 			if (this.FECHA_INICIO) adapterObject.fecha_inicio = this.FECHA_INICIO;
 			if (this.FECHA_FIN) adapterObject.fecha_fin = this.FECHA_FIN;
 			if (this.MINIMO) {
@@ -148,12 +150,12 @@ administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', 'dialogsSe
 		}
 
 		addRate(adapterObject){
-			let url = APP_CONFIG.SERVER_URL + '/patentes/patente';
+			const url = APP_CONFIG.SERVER_URL + '/patentes/patente';
 			return $http.post(url, adapterObject);
 		}
 
 		updateRate(adapterObject){
-			let url = APP_CONFIG.SERVER_URL + '/patentes/patente/update/' + this.ID;
+			const url = APP_CONFIG.SERVER_URL + '/patentes/patente/update/' + this.ID;
 			return $http.put(url, adapterObject);
 		}
 
@@ -187,6 +189,14 @@ administradorPatentes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', 'dialogsSe
 
 		get fullDescription(){
 			return this.CODIGO_TARIFA + ' - ' + this.DESCRI_TARIFA;
+		}
+
+		get modoCobro(){
+			if (this.MODO) {
+				return 'Valor fijo';
+			} else {
+				return 'Por TRN'
+			}
 		}
 	}
 

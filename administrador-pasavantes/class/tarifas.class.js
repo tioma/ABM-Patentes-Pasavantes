@@ -7,6 +7,7 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', 'dialogs
 		constructor(tarifaData){
 			this.MINIMO = false;
 			this.VALOR_MINIMO = 1;
+			this.MODO = 0;
 			this.CONTROL_MIN = true;
 			this.DESDE_OPENED = false;
 			this.HASTA_OPENED = false;
@@ -98,6 +99,7 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', 'dialogs
 			adapterObject.id_tipo_navegacion = parseInt(navegacion);
 			adapterObject.id_terminal = parseInt(muelle);
 			adapterObject.id_tarifa = this.ID_TARIFA;
+			adapterObject.modo = this.MODO;
 			if (this.FECHA_INICIO) adapterObject.fecha_inicio = this.FECHA_INICIO;
 			if (this.FECHA_FIN) adapterObject.fecha_fin = this.FECHA_FIN;
 			if (this.MINIMO){
@@ -149,12 +151,12 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', 'dialogs
 		}
 
 		addRate(adapterObject){
-			var url = `${APP_CONFIG.SERVER_URL}/pasavantes/pasavante`;
+			const url = `${APP_CONFIG.SERVER_URL}/pasavantes/pasavante`;
 			return $http.post(url, adapterObject);
 		}
 
 		updateRate(adapterObject){
-			var url = `${APP_CONFIG.SERVER_URL}/pasavantes/pasavante/update/${this.ID}`;
+			const url = `${APP_CONFIG.SERVER_URL}/pasavantes/pasavante/update/${this.ID}`;
 			return $http.put(url, adapterObject);
 		}
 
@@ -188,6 +190,14 @@ administradorPasavantes.factory('Tarifa', ['$http', 'APP_CONFIG', '$q', 'dialogs
 
 		get fullDescription(){
 			return `${this.CODIGO_TARIFA} - ${this.DESCRI_TARIFA}`;
+		}
+
+		get modoCobro(){
+			if (this.MODO) {
+				return 'Valor fijo';
+			} else {
+				return 'Por TRN'
+			}
 		}
 	}
 
